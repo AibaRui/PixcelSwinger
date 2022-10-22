@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class P_Control : MonoBehaviour
 {
 
+    [SerializeField] Animator _animKatana;
     public PlayerAction playerAction = PlayerAction.OnGround;
 
     [SerializeField] Text _xSpeed;
@@ -40,6 +41,7 @@ public class P_Control : MonoBehaviour
 
     public bool _isSliding;
 
+    public bool _isAvirity =false;
 
     public bool _isSquat;
     public bool _isGround;
@@ -48,10 +50,14 @@ public class P_Control : MonoBehaviour
     private float _limitSpeedX;
     private float _limitSpeedZ;
 
+    ClimbWall _climbWall;
+
     Rigidbody m_rb;
     void Start()
     {
+        _animKatana = _animKatana.GetComponent<Animator>();
         m_rb = GetComponent<Rigidbody>();
+        _climbWall = GetComponent<ClimbWall>();
     }
 
 
@@ -63,6 +69,13 @@ public class P_Control : MonoBehaviour
 
         _isGround = IsGrounded();
     }
+
+    private void LateUpdate()
+    {
+        _animKatana.SetBool("Ground", IsGrounded());
+
+    }
+
 
     void T()
     {
@@ -104,15 +117,20 @@ public class P_Control : MonoBehaviour
 
     void Check()
     {
-        if(FindObjectOfType<TimeAvirity>()._isSlashing)
+        if(_climbWall._isClimb)
         {
-            playerAction = PlayerAction.Slow;
-            _limitSpeedX = 50;
-            _limitSpeedZ = 50;
-            _isJump = false;
-            return;
+            playerAction = PlayerAction.Climb;
         }
 
+
+        if (_isAvirity)
+        {
+            playerAction = PlayerAction.Avirity;
+            _limitSpeedX = 20;
+            _limitSpeedZ = 20;
+            return;
+
+        }
         if (_isSwing)
         {
             _isSwingAir = true;
@@ -228,5 +246,7 @@ public class P_Control : MonoBehaviour
         WallRun,
         SwingAir,
         Slow,
+        Avirity,
+        Climb,
     }
 }

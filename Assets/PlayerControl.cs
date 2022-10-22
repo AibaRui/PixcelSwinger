@@ -46,12 +46,23 @@ public class PlayerControl : MonoBehaviour
     public bool _isGround;
     public bool _isJump;
 
+    PlayerMove _playerMove;
+    Swing _swing;
+    Grapple _grapple;
+
+
+
+    
     private float _limitSpeedX;
     private float _limitSpeedZ;
 
     Rigidbody m_rb;
     void Start()
     {
+        _playerMove = GetComponent<PlayerMove>();
+        _swing = GetComponent<Swing>();
+        _grapple = GetComponent<Grapple>();
+
         m_rb = GetComponent<Rigidbody>();
     }
 
@@ -105,16 +116,25 @@ public class PlayerControl : MonoBehaviour
     }
 
 
+    void Action()
+    {
+
+        if(_isGround)
+        {
+            _playerMove.Move();
+        }
+    }
+
     void Check()
     {
-        if (FindObjectOfType<TimeAvirity>()._isSlashing)
-        {
-            playerAction = PlayerAction.Slow;
-            _limitSpeedX = 50;
-            _limitSpeedZ = 50;
-            _isJump = false;
-            return;
-        }
+        //if (FindObjectOfType<TimeAvirity>()._isSlashing)
+        //{
+        //    playerAction = PlayerAction.Slow;
+        //    _limitSpeedX = 50;
+        //    _limitSpeedZ = 50;
+        //    _isJump = false;
+        //    return;
+        //}
 
         if (_isSwing)
         {

@@ -96,7 +96,7 @@ public class PlayerMove : MonoBehaviour
         _airVelo.y = 0;  // y 軸方向はゼロにして水平方向のベクトルにする
     }
 
-    void Move()
+   public void Move()
     {
         // 方向の入力を取得し、方向を求める
         float v = Input.GetAxisRaw("Vertical");
@@ -105,7 +105,7 @@ public class PlayerMove : MonoBehaviour
         // 入力方向のベクトルを組み立てる
         Vector3 dir = Vector3.forward * v + Vector3.right * h;
 
-        if (dir == Vector3.zero && _control._isGround)
+        if (dir == Vector3.zero)
         {
             // 方向の入力がニュートラルの時は、y 軸方向の速度を保持するだけ
             _rb.velocity = new Vector3(0f, _rb.velocity.y, 0f);
@@ -237,11 +237,8 @@ public class PlayerMove : MonoBehaviour
                 _control._isSliding = false;
                 _control._isJump = true;
                 _rb.velocity = new Vector3(_rb.velocity.x, _jumpPower, _rb.velocity.z);
-                // Animator Controller のパラメータをセットする
-                if (_anim)
-                {
-                    _anim.SetBool("IsGrounded", false);
-                }
+
+                _animKatana.Play("KatanaJumpStart");
             }
         }
     }
