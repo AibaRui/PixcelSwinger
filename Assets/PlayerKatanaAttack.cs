@@ -92,7 +92,7 @@ public class PlayerKatanaAttack : MonoBehaviour
                 _animKatana.Play("katanaAttack1");
 
             }
-          StartCoroutine(  CoolTime());
+          StartCoroutine(CoolTime());
         }
     }
     IEnumerator CoolTime()
