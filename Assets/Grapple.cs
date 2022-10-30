@@ -133,8 +133,10 @@ public class Grapple : MonoBehaviour
 
     void ExecuteGrapple()
     {
+        //グラップルの最低ポジション。キャラの足元
         Vector3 lowestPoint = new Vector3(_player.transform.position.x, _player.transform.position.y - 1f, _player.transform.position.z);
 
+        //相対的
         float grapplePointRelativeYPos = grapplePoint.y - lowestPoint.y;
         float highestPointOnArc = grapplePointRelativeYPos + overshootYAxis;
 

@@ -252,7 +252,7 @@ public class Swing : MonoBehaviour
         //ばねの強さ
         joint.spring = 4.5f;
 
-        //(springの減る量)バネがビヨーンと伸びるのを繰り返してから動かなくなるまでの時間が値が多いほど短くなる
+        //(springの減る量)バネがビヨーンと伸びるのを繰り返してから動かなくなるまでの時間。値が多いほど短くなる
         joint.damper = 7f;
 
         joint.massScale = 4.5f;

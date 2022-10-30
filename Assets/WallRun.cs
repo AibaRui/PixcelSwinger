@@ -183,7 +183,7 @@ public class WallRun : MonoBehaviour
             StopWallRun();
 
             _rb.velocity = Vector3.zero;
-            Vector3 dir = transform.forward;
+            Vector3 dir = Camera.main.transform.forward;
             dir.y = 0.5f;
             _rb.AddForce(dir * m_jumpPower, ForceMode.Impulse);
             StartCoroutine(CountCoolTime());
