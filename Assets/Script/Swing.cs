@@ -5,8 +5,6 @@ using UnityEngine;
 public class Swing : MonoBehaviour
 {
     [SerializeField] GameObject _waapon;
-
-
     [SerializeField] float _swingMoveSpeedH = 5;
     [SerializeField] float _swingMoveSpeedV = 7;
     [SerializeField] float _swinwgSpeedLimit = 15;
@@ -111,6 +109,7 @@ public class Swing : MonoBehaviour
             return;
         }
 
+        //円形のCast
         RaycastHit spherCastHit;
         Physics.SphereCast(_player.transform.position, predictionSphereCastRadius, Camera.main.transform.forward, out spherCastHit, _maxSwingDistance, _wallLayer);
 
@@ -120,11 +119,12 @@ public class Swing : MonoBehaviour
 
         Vector3 realHitPoint;
 
+        //真っ直ぐさせる場合
         if (raycastHit.point != Vector3.zero)
         {
             realHitPoint = raycastHit.point;
         }
-
+        //直線じゃないどこかの場合
         else if (spherCastHit.point != Vector3.zero)
         {
             realHitPoint = spherCastHit.point;
@@ -135,6 +135,7 @@ public class Swing : MonoBehaviour
             realHitPoint = Vector3.zero;
         }
 
+        //マーカーの場所の設定
         if (realHitPoint != Vector3.zero)
         {
             predictionPoint.gameObject.SetActive(true);

@@ -4,12 +4,12 @@ using UnityEngine;
 using System;
 
 
-public abstract class StateMachine : MonoBehaviour
+public abstract class StateMachine
 {
-    protected IState CurrentState { get; private set; }
+    public IState CurrentState { get; private set; }
 
     /// <summary>IState(インターフェイス)型のUpdateを回す</summary>
-    protected void Update()
+    public void Update()
     {
         if (CurrentState != null)
         {
@@ -17,6 +17,21 @@ public abstract class StateMachine : MonoBehaviour
         }
     }
 
+    public void LateUpdate()
+    {
+        if(CurrentState != null)
+        {
+            CurrentState.LateUpdate();
+        }
+    }
+
+    public void FixedUpdate()
+    {
+        if (CurrentState != null)
+        {
+            CurrentState.FixedUpdate();
+        }
+    }
 
     public event Action<IState> OnStateChanged = default;
 

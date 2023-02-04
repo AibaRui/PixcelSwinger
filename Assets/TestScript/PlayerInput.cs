@@ -19,10 +19,28 @@ public class PlayerInput : MonoBehaviour
     private Vector3 inputVector;
     private bool isJumping;
 
+    private bool _isLeftMouseClick = false;
+
+    public bool IsLeftMouseClick { get => _isLeftMouseClick; }
+
+    private bool _isLeftMouseClickUp = false;
+
+    public bool IsLeftMouseClickUp { get => _isLeftMouseClickUp; }
+
+    private bool _isRightMouseClickDown = false;
+
+    public bool IsRightMouseClickDown { get => _isRightMouseClickDown; }
 
     private float _horizontalInput;
     public float HorizontalInput { get => _horizontalInput; }
 
+    private bool _isCtrlDown;
+
+    public bool IsCtrlDown { get => _isCtrlDown; }
+
+    private bool _isCtrlUp;
+
+    public bool IsCtrlUp { get => _isCtrlUp; }
 
 
     private float _verticalInput;
@@ -39,6 +57,7 @@ public class PlayerInput : MonoBehaviour
         if (Input.GetKey(forward))
         {
             _verticalInput++;
+           // Debug.Log("+++");
         }
 
         if (Input.GetKey(back))
@@ -55,6 +74,20 @@ public class PlayerInput : MonoBehaviour
         {
             _horizontalInput++;
         }
+
+        //マウスの左クリック
+        _isLeftMouseClick = Input.GetMouseButtonDown(0);
+
+        _isLeftMouseClickUp = Input.GetMouseButtonUp(0);
+
+        _isRightMouseClickDown = Input.GetMouseButtonDown(1);
+
+
+        //Ctrlを押したか
+        _isCtrlDown = Input.GetKeyDown(KeyCode.LeftControl);
+        //Ctrlを離したか
+        _isCtrlUp = Input.GetKeyUp(KeyCode.LeftControl);
+
 
         isJumping = Input.GetKeyDown(jump);
     }

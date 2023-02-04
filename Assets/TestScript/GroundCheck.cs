@@ -14,19 +14,37 @@ public class GroundCheck : MonoBehaviour
 
     [SerializeField] private Vector3 posAdd;
 
+    [SerializeField] float _isGroundedLength = 1;
 
-    /// <summary>設置判定</summary>
+    [SerializeField] Animator _gunAnim;
+    /// <summary></summary>
     public bool IsGround { get; private set; }
 
     private RaycastHit _hitGround;
 
+
+    Collider[] _col;
+
     private void Update()
     {
-        IsGround = CheckFowardWall();
+        IsGround = C();
     }
 
 
 
+    public bool C()
+    {
+        CapsuleCollider col = GetComponent<CapsuleCollider>();
+        Vector3 start = this.transform.position + col.center + new Vector3(0, 0, -0.3f);   // start: 体の中心
+        Vector3 end = start + Vector3.down * _isGroundedLength;  // end: start から真下の地点
+        Debug.DrawLine(start, end, Color.green); // 動作確認用に Scene ウィンドウ上で線を表示する
+        bool isGrounded = Physics.Linecast(start, end); // 引いたラインに何かがぶつかっていたら true とする
+
+
+        _col = Physics.OverlapBox(transform.position + posAdd, new Vector3(_boxCastX, _boxCastY, _boxCastZ), Quaternion.identity, _layer);
+        _gunAnim.SetBool("IsGround", _col.Length > 0 ? true : false);
+        return _col.Length > 0 ? true : false;
+    }
     public bool CheckFowardWall()
     {
         bool isGround = Physics.BoxCast(transform.position + transform.forward +
@@ -38,6 +56,6 @@ public class GroundCheck : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(transform.position + transform.forward + posAdd, new Vector3(_boxCastX, _boxCastY, _boxCastZ));
+        Gizmos.DrawWireCube(transform.position + posAdd, new Vector3(_boxCastX, _boxCastY, _boxCastZ));
     }
 }

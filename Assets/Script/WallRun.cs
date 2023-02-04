@@ -94,7 +94,6 @@ public class WallRun : MonoBehaviour
  
             if (m_rightWallHit)
             {
-                Debug.Log("rrr");
                 _control._isWallRun = true;
                 _camera.m_Lens.Dutch = 20;
                 _isWallRun = true;
@@ -102,17 +101,20 @@ public class WallRun : MonoBehaviour
                _rb.useGravity = false;
                 Vector3 wallNomal = m_rightWall.normal;
                 wallForward = Vector3.Cross(wallNomal, transform.up);
- 
+
+                Debug.Log(wallForward);
+
+                //外積ベクトルがマイナスだった場合、向きを変える。
                 if ((transform.forward - wallForward).magnitude > (transform.forward - -wallForward).magnitude)
                 {
                     wallForward = -wallForward;
                 }
 
+
                 jumpFowrd = -transform.right + wallForward*2 + transform.up/2;
             }
             else if (m_leftWallHit)
             {
-                Debug.Log("lll");
                 _control._isWallRun = true;
                 _camera.m_Lens.Dutch = -20;
                 _isWallRun = true;

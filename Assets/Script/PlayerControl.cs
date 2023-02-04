@@ -41,7 +41,6 @@ public class PlayerControl : MonoBehaviour
 
     public bool _isSliding;
 
-
     public bool _isSquat;
     public bool _isGround;
     public bool _isJump;

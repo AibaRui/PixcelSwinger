@@ -43,13 +43,6 @@ public class ClimbWall : MonoBehaviour
     {
         CheckFowardWall();
         Climb();
-
-
-        //if (Physics.BoxCast(transform.position, new Vector3(_boxCastX, _boxCastY, _boxCastZ), transform.forward, out hitFowardWal, Quaternion.identity, 1.0f, LayerMask.GetMask("Default")))
-        //{
-        //    Debug.Log(hitFowardWal.collider.name);
-        //}
-
     }
 
     void Climb()
