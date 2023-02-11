@@ -7,6 +7,10 @@ public class MissionManager : MonoBehaviour
 
     [SerializeField] private List<MissionBase> _missionBases = new List<MissionBase>();
 
+    MissionBase _nowMainMission;
+
+    public MissionBase NowMainMission => _nowMainMission;
+
     int _nowMissionNum = 0;
 
     private bool _isAcceptMission = false;
@@ -60,6 +64,7 @@ public class MissionManager : MonoBehaviour
     {
         //ミッションクリア後の、したい処理を実行
         _missionBases[_nowMissionNum].MissionClear();
+        _nowMainMission = null;
 
         //現在、ミッションを受けていない状態に変更
         _isAcceptMission = false;
@@ -81,21 +86,23 @@ public class MissionManager : MonoBehaviour
     /// <summary>話が終わった後の処理</summary>
     public void TalkEnd()
     {
-        //ミッションを受け付けている
-        if (_isAcceptMission)
+        if (_nowMissionNum < _missionBases.Count)
         {
-            //ミッションクリアしていたら
-            if (_missionBases[_nowMissionNum].IsMissionCompleted)
+            //ミッションを受け付けている
+            if (_isAcceptMission)
             {
-                //ミッションクリア処理
-                EndMission();
+                //ミッションクリアしていたら
+                if (_missionBases[_nowMissionNum].IsMissionCompleted)
+                {
+                    //ミッションクリア処理
+                    EndMission();
+                }
+            }
+            else//ミッションをしていない
+            {
+                _isAcceptMission = true;
             }
         }
-        else//ミッションをしていない
-        {
-            _isAcceptMission = true;
-        }
-
 
 
     }
@@ -103,6 +110,7 @@ public class MissionManager : MonoBehaviour
     void MissionSet()
     {
         _missionBases[_nowMissionNum].Init(this);
+        _nowMainMission = _missionBases[_nowMissionNum];
     }
 
     /// <summary>ミッションの確認で話したときに呼ぶ</summary>

@@ -4,15 +4,16 @@ using UnityEngine;
 
 public abstract class MissionBase : MonoBehaviour
 {
-
-    [SerializeField] protected List<MissionEnterZone> _missionEnterZones = new List<MissionEnterZone>();
-
     [SerializeField] protected List<string> _acceptMissionText = new List<string>();
 
     [SerializeField] protected List<string> _receivedMissionText = new List<string>();
 
     [SerializeField] protected List<string> _endMissionText = new List<string>();
 
+    [SerializeField]
+    private int _missionNum;
+
+    private int _missionClearNum;
 
     protected MissionManager _missionManager = null;
 
@@ -36,12 +37,18 @@ public abstract class MissionBase : MonoBehaviour
         FirstSetting();
     }
 
+    public void CheckMission()
+    {
+        _missionClearNum++;
+
+        if(_missionClearNum==_missionNum)
+        {
+            _isMissionCompleted = true;
+            MissionClear();
+        }
+    }
+
     public abstract void FirstSetting();
-
-
-    /// <summary>クエストの成功条件</summary>
-    public abstract void MissionDetail();
-
 
     /// <summary>クエスト完了した時に実行</summary>
     public abstract void MissionClear();
