@@ -24,14 +24,16 @@ public class PlayerStateMachine : StateMachine
     private PlayerStateSwing _stateSwing = default;
     [SerializeField]
     private PlayerStateGrapple _stateGrapple = default;
+   // [SerializeField]
+  //  private PlayerStateMissionCheck _stateMissionCheck = default;
     [SerializeField]
-    private PlayerStateMissionCheck _stateMissionCheck = default;
-
+    private PlayerStateEventStop _stateEventStop;
     [SerializeField]
     private PlayerStateClimbWall _stateClimbWall = default;
 
     private PlayerController _playerController = null;
 
+    public PlayerStateEventStop StateEventStop => _stateEventStop;
     public PlayerStateIdle StateIdle => _stateIdle;
     public PlayerStateMove StateMove => _stateMove;
     public PlayerStateJump StateJump => _stateJump;
@@ -47,7 +49,7 @@ public class PlayerStateMachine : StateMachine
 
     public PlayerStateClimbWall StateClimbWall => _stateClimbWall;
 
-    public PlayerStateMissionCheck StateMissionCheck => _stateMissionCheck;
+  //  public PlayerStateMissionCheck StateMissionCheck => _stateMissionCheck;
     public PlayerController PlayerController => _playerController;
     #endregion
      [SerializeField]
@@ -70,8 +72,8 @@ public class PlayerStateMachine : StateMachine
         _stateWallRun.Init(this);
         _stateSwing.Init(this);
         _stateGrapple.Init(this);
-        _stateMissionCheck.Init(this);
         _stateClimbWall.Init(this);
+        _stateEventStop.Init(this);
     }
 
 }

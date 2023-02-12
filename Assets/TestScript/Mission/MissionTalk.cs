@@ -39,35 +39,27 @@ public class MissionTalk : TalkBase
         _playerInput = FindObjectOfType<PlayerInput>();
         MissionDetail();
 
-        foreach(var a in _talkEvents)
+        foreach (var a in _talkEvents)
         {
             _events.Add(a.Number, a.TalkEvent);
         }
-
     }
 
-    private void Update()
-    {
-        //受付範囲に入っているかどうか
-        if (_isEnter && !_isTalkNow)
-        {
-            //スペースを押す
-            if (_playerInput.IsJumping)
-            {
-                _nowTalkText.Clear();
-                if (_talkedNum == 0)
-                {
-                    _nowTalkText = _firstContactText;
-                }
-                else
-                {
-                    _nowTalkText = _receivedMissionText;
-                }
 
-                StartTalk();
-            }
+    protected override void TalkSet()
+    {
+        _nowTalkText.Clear();
+        if (_talkedNum == 0)
+        {
+            _nowTalkText = _firstContactText;
+        }
+        else
+        {
+            _nowTalkText = _receivedMissionText;
         }
     }
+
+
 
     public void MissionDetail()
     {
@@ -87,7 +79,7 @@ public class MissionTalk : TalkBase
             }
         }
         //Eventを実行
-        
+
     }
 
     /// <summary>会話が終了した時にするイベント</summary>
@@ -96,7 +88,9 @@ public class MissionTalk : TalkBase
         _endEvent.Invoke();
         _missionManager.NowMainMission.CheckMission();
         gameObject.SetActive(false);
+        _talkManager.ShowPanel.SetActive(false);
     }
+
 
 }
 

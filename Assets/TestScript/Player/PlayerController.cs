@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class PlayerController : MonoBehaviour
 {
-
 
     [SerializeField]
     private PlayerStateMachine _stateMachine = default;
@@ -40,6 +40,9 @@ public class PlayerController : MonoBehaviour
     private WallCheck _wallCheck;
 
     [SerializeField]
+    private PlayerEventEriaCheck _eventEriaCheck;
+
+    [SerializeField]
     private PlayerGrappleAndSwingSetting _playerSwingAndGrappleSetting;
 
     [SerializeField]
@@ -47,6 +50,16 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private MissionManager _missionManager;
+
+    [SerializeField]
+    private EventController _eventController;
+
+    [SerializeField]
+    private TalkManager _talkManager;
+
+    public TalkManager TalkManager => _talkManager;
+
+    public EventController EventController => _eventController;
 
     public PlayerInput PlayerInput => _playerInput;
     public PlayerStateMachine StateMachine => _stateMachine;
@@ -75,6 +88,8 @@ public class PlayerController : MonoBehaviour
     public MissionManager MissionManager { get => _missionManager; }
 
     public WallCheck WallCheck => _wallCheck;
+
+    public PlayerEventEriaCheck EventEriaCheck => _eventEriaCheck;
 
     private Rigidbody _rb;
     public Rigidbody Rb => _rb;

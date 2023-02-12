@@ -33,15 +33,16 @@ public class PlayerStateMove : PlayerStateBase
 
     public override void Update()
     {
-        //ミッションについて話す
-        if (_stateMachine.PlayerController.MissionManager.CheckMission.IsTalkNow)
+
+        if (_stateMachine.PlayerController.EventEriaCheck.IsEnterEventEria)
         {
-            _stateMachine.TransitionTo(_stateMachine.StateMissionCheck);
-            Debug.Log("Move=>MissionCheck");
-            return;
+            if (_stateMachine.PlayerController.PlayerInput.IsJumping)
+            {
+                _stateMachine.TransitionTo(_stateMachine.StateEventStop);
+                Debug.Log("Move=>EventStop");
+                return;
+            }
         }
-
-
 
         var v = _stateMachine.PlayerController.PlayerInput.VerticalInput;
 

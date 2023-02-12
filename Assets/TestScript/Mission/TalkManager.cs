@@ -25,7 +25,9 @@ public class TalkManager : MonoBehaviour
 
     public Text NameText => _nameText;
 
+    private TalkBase _talkBase;
 
+    public TalkBase TalkBase { get => _talkBase; set => _talkBase = value; }
 
     void Start()
     {
@@ -37,4 +39,10 @@ public class TalkManager : MonoBehaviour
     {
         
     }
+
+    public void DoTalk()
+    {
+        _talkBase.StartTalk();
+    }
+
 }

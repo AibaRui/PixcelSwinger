@@ -51,15 +51,6 @@ public class MissionManager : MonoBehaviour
         MissionSet();
     }
 
-
-    void Update()
-    {
-        //プレイヤーが近づいて話す処理
-        _checkMission.CheckPlayerToTalk();
-    }
-
-
-
     public void EndMission()
     {
         //ミッションクリア後の、したい処理を実行

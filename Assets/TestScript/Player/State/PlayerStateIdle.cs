@@ -29,17 +29,19 @@ public class PlayerStateIdle : PlayerStateBase
         _stateMachine.PlayerController.PlayerIdle.Idle();
 
 
+        if(_stateMachine.PlayerController.EventEriaCheck.IsEnterEventEria)
+        {
+            if (_stateMachine.PlayerController.PlayerInput.IsJumping)
+            {
+                _stateMachine.TransitionTo(_stateMachine.StateEventStop);
+                Debug.Log("Idle=>EventStop");
+                return;
+            }
+        }
+
         //段差登りの壁チェック
         _stateMachine.PlayerController.WallCheck.CheckClimbWall();
 
-
-        //ミッションについて話す
-        if (_stateMachine.PlayerController.MissionManager.CheckMission.IsTalkNow)
-        {
-            _stateMachine.TransitionTo(_stateMachine.StateMissionCheck);
-            Debug.Log("Move=>MissionCheck");
-            return;
-        }
 
         //Swingのモード切替
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.ChangeTypeSwingOrGrapple();

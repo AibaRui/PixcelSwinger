@@ -22,16 +22,20 @@ public abstract class TalkBase : MonoBehaviour
     /// <summary>会話の途中で演出をしたい際に、現在演出中かどうかを表す</summary>
     protected bool _isEvent;
 
-    TalkManager _talkManager;
+    protected TalkManager _talkManager;
+    protected EventController _eventController;
+
+
 
     protected int _talkedNum = 0;
 
     private void Awake()
     {
         _talkManager = GameObject.FindObjectOfType<TalkManager>();
+        _eventController = GameObject.FindObjectOfType<EventController>();
     }
 
-
+    protected abstract void TalkSet();
 
     protected abstract void TalkInEvent(int talkNum);
 
@@ -40,17 +44,22 @@ public abstract class TalkBase : MonoBehaviour
 
     public void StartTalk()
     {
-        //もし会話範囲内に、２人居た場合に二つとも呼ばれるのを防ぐために会話のパネルがactiveかどうか確認
-        if (_talkManager.TalkPanel.activeSelf == false)
+        TalkSet();
+        if (!_eventController.IsEventNow)
         {
-            //会話のパネルを表示。
-            _talkManager.TalkPanel.SetActive(true);
+            //もし会話範囲内に、２人居た場合に二つとも呼ばれるのを防ぐために会話のパネルがactiveかどうか確認
+            if (_talkManager.TalkPanel.activeSelf == false)
+            {
+                //現在をイベント中とする
+                _eventController.ChangeEventSituationTrue();
 
-            //武器を隠す
-            _talkManager.Weapon.SetActive(false);
+                //会話のパネルを表示。
+                _talkManager.TalkPanel.SetActive(true);
 
-            _isTalkNow = true;
-            StartCoroutine(Talk());
+
+                _isTalkNow = true;
+                StartCoroutine(Talk());
+            }
         }
     }
 
@@ -75,20 +84,22 @@ public abstract class TalkBase : MonoBehaviour
         }
 
         yield return new WaitForSeconds(0.2f);
+
+        //会話のパネルを閉じる
+        EndTalk();
+    }
+
+    public void EndTalk()
+    {
+        //会話のパネルを非表示にする
+        _talkManager.TalkPanel.SetActive(false);
         _talkedNum++;
         TalkEndEvent();
 
-
-
-        //会話のパネルを閉じる
-        CloseMissionPanel();
         _isTalkNow = false;
-    }
 
-    public void CloseMissionPanel()
-    {
-        _talkManager.TalkPanel.SetActive(false);
-        _talkManager.Weapon.SetActive(true);
+        //Event状態を終える
+        _eventController.ChangeEventSituationFalse();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -96,6 +107,7 @@ public abstract class TalkBase : MonoBehaviour
         if (other.gameObject.tag == "Player" && _talkManager.ShowPanel.activeSelf == false)
         {
             _talkManager.ShowPanel.SetActive(true);
+            _talkManager.TalkBase = this;
             _isEnter = true;
         }
     }
