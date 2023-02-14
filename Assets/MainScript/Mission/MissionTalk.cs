@@ -14,6 +14,9 @@ public class MissionTalk : TalkBase
     [Header("デバッグ用のミッションの簡潔な内容")]
     [SerializeField] private string _missionDetail;
 
+    [Header("インベントリに表記する次のミッション内容")]
+    [SerializeField] private string _missionLongDetail;
+
     [Header("開始時に話す言葉")]
     [SerializeField] private List<string> _firstContactText = new List<string>();
 
@@ -90,6 +93,7 @@ public class MissionTalk : TalkBase
         {
             _endEvent.Invoke();
             _missionManager.NowMainMission.CheckMission();
+            _missionManager.SettingMissionText(_missionDetail, _missionLongDetail);
         }
 
 

@@ -5,6 +5,14 @@ using UnityEngine.Events;
 
 public class Mission : MonoBehaviour
 {
+    [Header("ミッションの簡潔な内容")]
+    [SerializeField] private string _missionDetail;
+
+    [Header("インベントリに表記する次のミッション内容")]
+    [SerializeField] private string _missionLongDetail;
+
+
+
     [Header("ミッション開始時に出したいもの")]
     [SerializeField]
     private UnityEvent _firstEvent;
@@ -33,6 +41,7 @@ public class Mission : MonoBehaviour
     [SerializeField]
     private int _missionNum;
 
+
     private int _missionClearNum;
 
     protected MissionManager _missionManager = null;
@@ -59,6 +68,7 @@ public class Mission : MonoBehaviour
     public void StartMission()
     {
         _firstEvent?.Invoke();
+        _missionManager.SettingMissionText(_missionDetail, _missionLongDetail);
     }
 
     public void CheckMission()

@@ -7,6 +7,9 @@ using Cinemachine;
 public class MouseSensitivity : MonoBehaviour
 {
     [SerializeField] Slider _sensitivitySlider;
+
+    [SerializeField] private float _firstSet = 0.5f;
+
     CinemachinePOV _camera;
     [SerializeField] CinemachineVirtualCamera _ca;
     [SerializeField] float _maxSensitivity = 300;
@@ -21,6 +24,8 @@ public class MouseSensitivity : MonoBehaviour
 
         //スライダーの現在値の設定
         _sensitivitySlider.minValue = _mixSensitivity;
+
+        _sensitivitySlider.value = _firstSet;
     }
 
     public void ChangeSensitivity(float value)

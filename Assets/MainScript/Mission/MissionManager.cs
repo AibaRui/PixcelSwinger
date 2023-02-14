@@ -1,11 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class MissionManager : MonoBehaviour
 {
 
     [SerializeField] private List<Mission> _missionBases = new List<Mission>();
+
+    [Header("ゲーム画面のミッションの詳細のText")]
+    [SerializeField] private Text _missionDetailFromMainUIText;
+
+    [Header("インベントリのミッションの内容のText")]
+    [SerializeField] private Text _inventoryMissionText;
+
+    [Header("インベントリのミッションの詳細のText")]
+    [SerializeField] private Text _inventoryMissionDetailText;
 
     Mission _nowMainMission;
 
@@ -51,6 +62,13 @@ public class MissionManager : MonoBehaviour
         MissionSet();
     }
 
+    /// <summary>ゲーム画面のミッションの詳細のTextを書き換える</summary>
+    public void SettingMissionText(string mission,string detail)
+    {
+        _inventoryMissionText.text = mission;
+        _missionDetailFromMainUIText.text = mission;
+        _inventoryMissionDetailText.text = detail;
+    }
 
 
     public void EndMission()
