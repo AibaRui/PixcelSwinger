@@ -44,7 +44,7 @@ public class PlayerStateUpAir : PlayerStateBase
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.ChangeTypeSwingOrGrapple();
 
         //Swing
-        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClick)
+        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickDown)
         {
             if (_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.SwingOrGrappleEnum == PlayerGrappleAndSwingSetting.SwingOrGrapple.Swing)
             {
@@ -107,7 +107,7 @@ public class PlayerStateUpAir : PlayerStateBase
             }
             else
             {
-                _stateMachine.TransitionTo(_stateMachine.StateMove);
+                _stateMachine.TransitionTo(_stateMachine.StateWalk);
                 Debug.Log("Climb=>Move");
                 return;
             }

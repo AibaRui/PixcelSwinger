@@ -7,16 +7,37 @@ public class PlayerMoveing : MonoBehaviour
 {
     [SerializeField] CinemachineVirtualCamera _camera;
 
-    [Header("地上での速さ")]
-    [Tooltip("地上での速さ")] [SerializeField] float _movingSpeedOnGround = 5f;
+    [Header("歩きの速さ")]
+    [Tooltip("歩きの速さ")] [SerializeField] float _walkSpeed = 5f;
+
+    [Header("走りの速さ")]
+    [Tooltip("走りの速さ")] [SerializeField] float _runSpeed = 10f;
 
     [Header("空中でのAddする動きの速さ")]
     [Tooltip("空中でのAddする動きの速さ")] [SerializeField] float _movingSpeedOnAir = 5f;
 
-
+    [Header("空中で下向きに加速する速さ")]
     [SerializeField] float _addDownAir = 5;
 
     [SerializeField] bool _isDownSpeed = false;
+
+    [Header("歩き_を示すパネル")]
+    [Tooltip("歩き_を示すパネル")] [SerializeField] private GameObject _walkPanel;
+
+    [Header("走り_を示すパネル")]
+    [Tooltip("走り_を示すパネル")] [SerializeField] private GameObject _runPanel;
+
+    private float _moveSpeed = 5;
+
+
+
+    /// <summary>trueの時は</summary>
+    private bool _moveTypeIsWalk = true;
+
+    public bool IsWalk => _moveTypeIsWalk;
+
+    private bool _isPushChangeOrPushing = true;
+
 
     private Vector3 _airVelo;
 
@@ -25,6 +46,17 @@ public class PlayerMoveing : MonoBehaviour
     Rigidbody _rb;
     [SerializeField] Animator _anim;
     [SerializeField] Animator _legAnim;
+
+    private MoveSpeedChangeType _moveSpeedChangeType = MoveSpeedChangeType.Push;
+
+    public MoveSpeedChangeType MoveSpeedChangeTypes => _moveSpeedChangeType;
+
+    public enum MoveSpeedChangeType
+    {
+        Push,
+        Pushing,
+    }
+
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
@@ -33,9 +65,73 @@ public class PlayerMoveing : MonoBehaviour
 
     void Start()
     {
+        _moveSpeed = _walkSpeed;
+    }
+
+    /// <summary>ボタンで呼び出す</summary>
+    /// <param name="type"></param>
+    public void MoveSpeedChangeTypeChange(bool _isPush)
+    {
+        _moveSpeed = _walkSpeed;
+
+        if (_isPush)
+        {
+            _moveSpeedChangeType = MoveSpeedChangeType.Push;
+            _moveTypeIsWalk = true;
+        }
+        else
+        {
+            _moveSpeedChangeType = MoveSpeedChangeType.Pushing;
+        }
 
     }
 
+    public void SpeedChange()
+    {
+        if (_moveSpeedChangeType == MoveSpeedChangeType.Push)
+        {
+            if (_playerInput.IsLeftShiftDown)
+            {
+                _moveTypeIsWalk = !_moveTypeIsWalk;
+
+                if (_moveTypeIsWalk)
+                {
+                    _moveSpeed = _walkSpeed;
+
+                    _walkPanel?.SetActive(true);
+                    _runPanel?.SetActive(false);
+                }
+                else
+                {
+                    _moveSpeed = _runSpeed;
+
+                    _walkPanel?.SetActive(false);
+                    _runPanel?.SetActive(true);
+                }
+            }
+        }
+        else
+        {
+            if (_playerInput.IsLeftShift)
+            {
+                _moveSpeed = _runSpeed;
+
+                _walkPanel?.SetActive(false);
+                _runPanel?.SetActive(true);
+            }
+            else
+            {
+                _moveSpeed = _walkSpeed;
+
+                _walkPanel?.SetActive(true);
+                _runPanel?.SetActive(false);
+            }
+
+        }
+    }
+
+
+    /// <summary>キャラの正面を決める</summary>
     public void SetDir()
     {
         Vector3 dir = Camera.main.transform.forward;
@@ -73,7 +169,7 @@ public class PlayerMoveing : MonoBehaviour
             dir = Camera.main.transform.TransformDirection(dir);    // メインカメラを基準に入力方向のベクトルを変換する
             dir.y = 0;  // y 軸方向はゼロにして水平方向のベクトルにする
 
-            Vector3 velo = dir.normalized * _movingSpeedOnGround; // 入力した方向に移動する
+            Vector3 velo = dir.normalized * _moveSpeed; // 入力した方向に移動する
             velo.y = _rb.velocity.y;   // ジャンプした時の y 軸方向の速度を保持する
             _rb.velocity = velo;   // 計算した速度ベクトルをセットする
         }
@@ -84,7 +180,7 @@ public class PlayerMoveing : MonoBehaviour
 
         if (_rb.velocity.x != 0 || _rb.velocity.z != 0)
         {
-            _anim.SetFloat("Speed", 5);
+            _anim.SetFloat("Speed", _moveSpeed);
         }
 
 

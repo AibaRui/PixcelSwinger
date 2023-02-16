@@ -72,7 +72,7 @@ public class PlayerStateSwing : PlayerStateBase
                 }
                 else
                 {
-                    _stateMachine.TransitionTo(_stateMachine.StateMove);
+                    _stateMachine.TransitionTo(_stateMachine.StateWalk);
                     Debug.Log("Swing=>Move");
                 }
             }

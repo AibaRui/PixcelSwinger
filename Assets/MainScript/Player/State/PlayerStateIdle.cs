@@ -28,6 +28,10 @@ public class PlayerStateIdle : PlayerStateBase
     public override void Update()
     {
         _stateMachine.PlayerController.PlayerIdle.Idle();
+        _stateMachine.PlayerController.PlayerMoveing.SetDir();
+
+        //走り、歩き、の切り替え
+        _stateMachine.PlayerController.PlayerMoveing.SpeedChange();
 
         //一定時間経過したら、アシストUIを出す仕組み
         _stateMachine.PlayerController.UIShowSystem.ShowUI();
@@ -60,7 +64,7 @@ public class PlayerStateIdle : PlayerStateBase
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.ChangeTypeSwingOrGrapple();
 
         //Swing
-        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClick)
+        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickDown)
         {
             if (_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.SwingOrGrappleEnum == PlayerGrappleAndSwingSetting.SwingOrGrapple.Swing)
             {
@@ -77,12 +81,19 @@ public class PlayerStateIdle : PlayerStateBase
         }
 
 
+        if(_stateMachine.PlayerController.PlayerInput.IsCtrlDown)
+        {
+            _stateMachine.TransitionTo(_stateMachine.StateSquat);
+            Debug.Log("Idle=>Squat");
+            return;
+        }
+
         var h = _stateMachine.PlayerController.PlayerInput.HorizontalInput;
         var v = _stateMachine.PlayerController.PlayerInput.VerticalInput;
 
         if ((h != 0 || v != 0) && _stateMachine.PlayerController.GroundCheck.IsGround)
         {
-            _stateMachine.TransitionTo(_stateMachine.StateMove);
+            _stateMachine.TransitionTo(_stateMachine.StateWalk);
             Debug.Log("Idle=>Move");
             return;
         }

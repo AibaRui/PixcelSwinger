@@ -71,7 +71,7 @@ public class PlayerStateGrapple : PlayerStateBase
             }
             else
             {
-                _stateMachine.TransitionTo(_stateMachine.StateMove);
+                _stateMachine.TransitionTo(_stateMachine.StateWalk);
                 Debug.Log("Grapple=>Move");
             }
         }

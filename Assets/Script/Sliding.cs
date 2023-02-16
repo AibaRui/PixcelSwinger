@@ -10,7 +10,7 @@ public class Sliding : MonoBehaviour
 
     [Header("メインのカメラ")]
     [SerializeField] CinemachineVirtualCamera _camera;
-    CinemachineTransposer _cameraTransposer;
+    [SerializeField] CinemachineTransposer _cameraTransposer;
 
     /// <summary>スライディングできるかどうか</summary>
     bool _okSliding = true;
@@ -70,7 +70,7 @@ public class Sliding : MonoBehaviour
             _control._isSquat = true;
         }
 
-        if (Input.GetKeyUp(KeyCode.LeftControl)&& _control._isGround)
+        if (Input.GetKeyUp(KeyCode.LeftControl) && _control._isGround)
         {
             m_rb.velocity = Vector3.zero;
             _control._isSquat = false;

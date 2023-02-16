@@ -41,7 +41,7 @@ public class PlayerStateJump : PlayerStateBase
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.ChangeTypeSwingOrGrapple();
 
         //Swing
-        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClick)
+        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickDown)
         {
             if (_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.SwingOrGrappleEnum == PlayerGrappleAndSwingSetting.SwingOrGrapple.Swing)
             {

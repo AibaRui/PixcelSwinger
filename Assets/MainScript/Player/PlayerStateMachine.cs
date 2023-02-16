@@ -11,7 +11,9 @@ public class PlayerStateMachine : StateMachine
     [SerializeField]
     private PlayerStateIdle _stateIdle = default;
     [SerializeField]
-    private PlayerStateMove _stateMove = default;
+    private PlayerStateWalk _stateWalk = default;
+    [SerializeField]
+    private PlayerStateRun _stateRun = default;
     [SerializeField]
     private PlayerStateJump _stateJump = default;
     [SerializeField]
@@ -30,12 +32,17 @@ public class PlayerStateMachine : StateMachine
     private PlayerStateEventStop _stateEventStop;
     [SerializeField]
     private PlayerStateClimbWall _stateClimbWall = default;
+    [SerializeField]
+    private PlayerStateSquat _stateSquat = default;
+    [SerializeField]
+    private PlayerStateSliding _stateSliding = default;
 
     private PlayerController _playerController = null;
 
     public PlayerStateEventStop StateEventStop => _stateEventStop;
     public PlayerStateIdle StateIdle => _stateIdle;
-    public PlayerStateMove StateMove => _stateMove;
+    public PlayerStateWalk StateWalk => _stateWalk;
+    public PlayerStateRun StateRun => _stateRun;
     public PlayerStateJump StateJump => _stateJump;
     public PlayerStateUpAir StateUpAir => _stateUpAir;
 
@@ -49,12 +56,15 @@ public class PlayerStateMachine : StateMachine
 
     public PlayerStateClimbWall StateClimbWall => _stateClimbWall;
 
+    public PlayerStateSliding StateSliding => _stateSliding;
+
+    public PlayerStateSquat StateSquat => _stateSquat;
     public PlayerStateOpenInventory StateInventory => _stateOpenInventory;
     public PlayerController PlayerController => _playerController;
     #endregion
-     [SerializeField]
+    [SerializeField]
     private GroundCheck _groundCheck;
-    public GroundCheck GroundCheck =>_groundCheck;
+    public GroundCheck GroundCheck => _groundCheck;
 
     public void Init(PlayerController playerController)
     {
@@ -65,7 +75,7 @@ public class PlayerStateMachine : StateMachine
     protected override void StateInit()
     {
         _stateIdle.Init(this);
-        _stateMove.Init(this);
+        _stateWalk.Init(this);
         _stateJump.Init(this);
         _stateUpAir.Init(this);
         _stateDownAir.Init(this);
@@ -75,6 +85,9 @@ public class PlayerStateMachine : StateMachine
         _stateClimbWall.Init(this);
         _stateEventStop.Init(this);
         _stateOpenInventory.Init(this);
+        _stateSquat.Init(this);
+        _stateSliding.Init(this);
+        _stateRun.Init(this);
     }
 
 }

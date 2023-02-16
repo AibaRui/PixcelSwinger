@@ -7,21 +7,19 @@ using UnityEngine.UI;
 [CreateAssetMenu(menuName = "ItemData")]
 public class ItemDataInformation : ScriptableObject
 {
-//    [SerializeField] private ItemManager.ItemDatas itemData;
+    //    [SerializeField] private ItemManager.ItemDatas itemData;
 
-    [SerializeField]
-    private Sprite _itemUIImage;
+    [Header("アイテムのイメージ")]
+    [SerializeField] private Sprite _itemUIImage;
 
-    [SerializeField]
-    private string _nameID;
+    [Header("アイテムの識別名")]
+    [SerializeField] private string _nameID;
 
-    [SerializeField]
-    private string _name;
+    [Header("インベントリに表示するアイテム名前")]
+    [SerializeField] private string _name;
 
-
-
-    [SerializeField]
-    private string _information;
+    [Header("アイテムの説明")]
+    [SerializeField] private string _information;
 
     public string Name => _name;
 

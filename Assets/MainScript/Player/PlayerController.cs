@@ -34,6 +34,9 @@ public class PlayerController : MonoBehaviour
     private PlayerClimingWall _playerClimbWall;
 
     [SerializeField]
+    private PlayerSquatAndSliding _playerSquatAndSliding;
+
+    [SerializeField]
     private GroundCheck _groundCheck;
 
     [SerializeField]
@@ -47,6 +50,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private PlayerVelocityLimitControl _playerVelocityLimitControl;
+
 
     [SerializeField]
     private MissionManager _missionManager;
@@ -79,6 +83,8 @@ public class PlayerController : MonoBehaviour
     public PlayerMoveing PlayerMoveing => _playerMove;
 
     public PlayerJumping PlayerJumping => _playerJumping;
+
+    public PlayerSquatAndSliding PlayerSquatAndSliding => _playerSquatAndSliding;
 
     public GroundCheck GroundCheck => _groundCheck;
 

@@ -12,41 +12,55 @@ public class PlayerInput : MonoBehaviour
     [SerializeField] private KeyCode jump = KeyCode.Space;
 
     /// <summary>キーによる方向</summary>
+    private Vector3 inputVector;
     public Vector3 InputVector => inputVector;
 
-    public bool IsJumping { get => isJumping; set => isJumping = value; }
+    [Tooltip("スペースを押す")]
+    private bool _isJumping;
+    public bool IsJumping { get => _isJumping; set => _isJumping = value; }
 
-    private Vector3 inputVector;
-    private bool isJumping;
+    [Tooltip("左クリック_押す")]
+    private bool _isLeftMouseClickDown = false;
+    public bool IsLeftMouseClickDown { get => _isLeftMouseClickDown; }
 
-    private bool _isLeftMouseClick = false;
-
-    public bool IsLeftMouseClick { get => _isLeftMouseClick; }
-
+    [Tooltip("左クリック_離す")]
     private bool _isLeftMouseClickUp = false;
-
-    
     public bool IsLeftMouseClickUp { get => _isLeftMouseClickUp; }
 
+    [Tooltip("右クリック_押す")]
     private bool _isRightMouseClickDown = false;
-
     public bool IsRightMouseClickDown { get => _isRightMouseClickDown; }
+
+    [Tooltip("左Ctrl_押す")]
+    private bool _isCtrlDown;
+    public bool IsCtrlDown { get => _isCtrlDown; }
+
+    [Tooltip("左Ctrl_離す")]
+    private bool _isCtrlUp;
+    public bool IsCtrlUp { get => _isCtrlUp; }
+
+    private float _isMouseScrol = 0;
+
+    public float IsMouseScrol => _isMouseScrol;
+
+
+    [Tooltip("Tab_押す")]
+    private bool _isTabDown;
+    public bool IsTabDown => _isTabDown;
+
+    [Tooltip("左Shift_押す")]
+    private bool _isLeftShiftDown = false;
+    public bool IsLeftShiftDown => _isLeftShiftDown;
+
+    private bool _isLeftShift = false;
+    public bool IsLeftShift => _isLeftShift;
+
+    [Tooltip("左Shift_離す")]
+    private bool _isLeftShiftUp = false;
+    public bool IsLeftShiftUp => _isLeftShiftUp;
 
     private float _horizontalInput;
     public float HorizontalInput { get => _horizontalInput; }
-
-    private bool _isCtrlDown;
-
-    public bool IsCtrlDown { get => _isCtrlDown; }
-
-    private bool _isCtrlUp;
-
-    public bool IsCtrlUp { get => _isCtrlUp; }
-
-    private bool _isTabDown;
-
-    public bool IsTabDown => _isTabDown;
-
 
     private float _verticalInput;
 
@@ -62,7 +76,7 @@ public class PlayerInput : MonoBehaviour
         if (Input.GetKey(forward))
         {
             _verticalInput++;
-           // Debug.Log("+++");
+            // Debug.Log("+++");
         }
 
         if (Input.GetKey(back))
@@ -81,10 +95,11 @@ public class PlayerInput : MonoBehaviour
         }
 
         //マウスの左クリック
-        _isLeftMouseClick = Input.GetMouseButtonDown(0);
-
+        _isLeftMouseClickDown = Input.GetMouseButtonDown(0);
         _isLeftMouseClickUp = Input.GetMouseButtonUp(0);
 
+
+        //マウス右クリック
         _isRightMouseClickDown = Input.GetMouseButtonDown(1);
 
 
@@ -93,11 +108,18 @@ public class PlayerInput : MonoBehaviour
         //Ctrlを離したか
         _isCtrlUp = Input.GetKeyUp(KeyCode.LeftControl);
 
+        //Space
+        _isJumping = Input.GetKeyDown(jump);
 
-        isJumping = Input.GetKeyDown(jump);
-
+        //Tab
         _isTabDown = Input.GetKeyDown(KeyCode.Tab);
 
+        // Shift
+        _isLeftShiftDown = Input.GetKeyDown(KeyCode.LeftShift);
+        _isLeftShiftUp = Input.GetKeyUp(KeyCode.LeftShift);
+        _isLeftShift = Input.GetKey(KeyCode.LeftShift);
+
+        _isMouseScrol = Input.GetAxis("Mouse ScrollWheel");
     }
 
     private void Update()

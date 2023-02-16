@@ -14,12 +14,14 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
     [Header("アンカー着地点のマーカー")]
     [Tooltip("アンカー着地点のマーカー")] [SerializeField] Transform _predictionPoint;
 
-    [Header("アンカーを刺せる最大の長さ")]
-    [Tooltip("アンカーを刺せる最大の長さ")] [SerializeField] float _maxSwingDistance = 25f;
+    [Header("ワイヤーの長さ")]
+    [Tooltip("ワイヤーの長さ")] [SerializeField] private List<float> _wireLongs = new List<float>();
 
-    [Header("Grappleのアンカーを刺せる最大の長さ")]
-    [Tooltip("Grappleのアンカーを刺せる最大の長さ")] [SerializeField] float _maxGrappleDistance = 25f;
+    private float _wireLong = 25;
 
+    private int _wireLongsNum = 0;
+
+    [SerializeField] Text _nowWireLongText;
 
     [SerializeField] Text _nowSetText;
     //Enum
@@ -66,13 +68,15 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
     {
         _nowSetText.text = _swingOrGrappleEnum.ToString();
         lr = GetComponent<LineRenderer>();
+
+        _wireLong = _wireLongs[0];
     }
 
     public void ChangeTypeSwingOrGrapple()
     {
-        if(_playerInput.IsRightMouseClickDown)
+        if (_playerInput.IsRightMouseClickDown)
         {
-            if(_swingOrGrappleEnum == SwingOrGrapple.Swing)
+            if (_swingOrGrappleEnum == SwingOrGrapple.Swing)
             {
                 _swingOrGrappleEnum = SwingOrGrapple.Grapple;
                 _nowSetText.text = "Grapple";
@@ -83,6 +87,32 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
                 _nowSetText.text = "Swing";
             }
         }
+
+        //上に
+        if (_playerInput.IsMouseScrol > 0)
+        {
+            _wireLongsNum++;
+            if(_wireLongsNum==_wireLongs.Count)
+            {
+                _wireLongsNum = _wireLongs.Count-1;
+            }
+            _wireLong = _wireLongs[_wireLongsNum];
+            _nowWireLongText.text = _wireLong.ToString("00");
+        }
+        //下に
+        else if (_playerInput.IsMouseScrol < 0)
+        {
+            _wireLongsNum--;
+            if (_wireLongsNum <0)
+            {
+                _wireLongsNum = 0;
+            }
+            _wireLong = _wireLongs[_wireLongsNum];
+            _nowWireLongText.text = _wireLong.ToString("00");
+        }
+
+
+
     }
 
     /// <summary>アンカーの刺す位置を探す関数</summary>
@@ -103,13 +133,13 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
 
         if (_swingOrGrappleEnum == SwingOrGrapple.Swing)
         {
-            maxDistance = _maxSwingDistance;
+            maxDistance = _wireLong;
         }
         else
         {
-            maxDistance = _maxGrappleDistance;
+            maxDistance = _wireLong;
         }
-            Physics.SphereCast(transform.position, predictionSphereCastRadius, Camera.main.transform.forward, out spherCastHit, maxDistance, _wallLayer);
+        Physics.SphereCast(transform.position, predictionSphereCastRadius, Camera.main.transform.forward, out spherCastHit, maxDistance, _wallLayer);
 
 
         Physics.Raycast(transform.position, Camera.main.transform.forward, out raycastHit, maxDistance, _wallLayer);

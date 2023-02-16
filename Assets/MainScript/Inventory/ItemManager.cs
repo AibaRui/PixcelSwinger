@@ -10,20 +10,32 @@ public class ItemManager : MonoBehaviour
     [Header("インベントリマネージャー")]
     [SerializeField] private InventoryManager _inventoryManager;
 
+    [Header("初期でもているアイテム")]
+    [SerializeField] private List<ItemDataInformation> _firstGetItem = new List<ItemDataInformation>();
+
     private Dictionary<string, int> _getItems = new Dictionary<string, int>();
-
-    private List<GameObject> _items = new List<GameObject>();
-
-    public List<GameObject> Items => _items;
 
      ItemDatas ItemData = ItemDatas.Karaage;
 
- 
+    private void Start()
+    {
+        foreach(var item in _firstGetItem)
+        {
+            AddItem(item.NameId);
+        }
+    }
+
     //アイテムを追加する
     public void AddItem(string name)
     {
+        //IDが正しいかどうかチェック
+        if (!CheckItem(name))
+        {
+            return;
+        }
+
         //既にあったら個数を増やす(個数のシステムは現在実装していない)
-        if(_getItems.ContainsKey(name))
+        if (_getItems.ContainsKey(name))
         {
             _getItems[name]++;
         }
@@ -37,22 +49,23 @@ public class ItemManager : MonoBehaviour
             {
                 if(item.NameId== name)
                 {
-                    _inventoryManager.SetItemPanel(item.Name,item.Information, item.ItemUIPanel);
+                    _inventoryManager.InventoryAddItem(item.Name,item.Information, item.ItemUIPanel);
                 }
             }
         }
     }
 
-    public void CheckItem(string name)
+    public bool CheckItem(string name)
     {
-        foreach(var a in _itemDatas)
+        foreach (var a in _itemDatas)
         {
-            if(a.NameId==name)
+            if (a.NameId == name)
             {
-                return;
+                return true;
             }
         }
         Debug.LogError($"{name}は無いか、名前が違います");
+        return false;
     }
 
     public enum ItemDatas
@@ -62,18 +75,5 @@ public class ItemManager : MonoBehaviour
 
 
     }
-
-}
-
-
-
-class ItemInforMation
-{
-    private GameObject _itemPanel;
-
-    public GameObject ItemPanel { get => _itemPanel; set => _itemPanel = value; }
-
-
-
 
 }

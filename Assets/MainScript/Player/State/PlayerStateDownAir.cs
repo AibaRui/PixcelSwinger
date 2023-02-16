@@ -41,7 +41,7 @@ public class PlayerStateDownAir : PlayerStateBase
         //SwingÇÃÉÇÅ[Éhêÿë÷
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.ChangeTypeSwingOrGrapple();
         //Swing
-        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClick)
+        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickDown)
         {
             if (_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.SwingOrGrappleEnum == PlayerGrappleAndSwingSetting.SwingOrGrapple.Swing)
             {
@@ -100,7 +100,7 @@ public class PlayerStateDownAir : PlayerStateBase
 
         if ((h != 0 || v != 0) && _stateMachine.PlayerController.GroundCheck.IsGround)
         {
-            _stateMachine.TransitionTo(_stateMachine.StateMove);
+            _stateMachine.TransitionTo(_stateMachine.StateWalk);
             return;
         }
 

@@ -7,15 +7,25 @@ public class WallCheck : MonoBehaviour
     [Header("登れる壁のレイヤー")]
     [SerializeField] LayerMask _layerClimbWall;
 
-    [SerializeField] float _boxCastX = 1;
-    [SerializeField] float _boxCastY = 1;
-    [SerializeField] float _boxCastZ = 1;
+    [Header("正面のRay")]
+    [SerializeField] float _boxCastFowardMidleX = 1;
+    [SerializeField] float _boxCastFowardMidleY = 1;
+    [SerializeField] float _boxCastFowardMidleZ = 1;
+    [SerializeField] Vector3 _posAddFowardMidle;
 
-    [SerializeField] float _downLong;
+    [Header("正面上のRayの上の長さ")]
+    [SerializeField] float _upWallCheckLayLongY = 4;
 
-    [SerializeField] float _upLayerLong;
+    [Header("正面上のRayの正面の長さ")]
+    [SerializeField] float _upWallCheckLayLongZ = 3;
 
-    [SerializeField] Vector3 posAdd;
+    [Header("正面下のRayの上の長さ")]
+    [SerializeField] float _downWallCheckLayLongY = 4;
+
+    [Header("正面下のRayの正面の長さ")]
+    [SerializeField] float _downWallCheckLayLongZ = 3;
+
+
     /// <summary>前方に壁があるかどうか</summary>
     private bool _fowardWall;
 
@@ -39,16 +49,16 @@ public class WallCheck : MonoBehaviour
 
     //壁走りの設定
 
-    [Header("Rayの長さ")]
-    [SerializeField] float m_checkWallRayDistace = 2f;
+    [Header("横のRayの長さ(WalllRun用)")]
+    [SerializeField] float _checkWallRayDistace = 2f;
 
     [Header("壁のレイヤー")]
     [SerializeField] LayerMask _wallLayer;
 
     /// <summary>右の壁に当たっているかどうか</summary>
-    bool m_rightWallHit = false;
+    bool _rightWallHit = false;
     /// <summary>右の壁に当たっているかどうか</summary>
-    bool m_leftWallHit = false;
+    bool _leftWallHit = false;
     RaycastHit m_rightWall;
     RaycastHit m_leftWall;
 
@@ -72,39 +82,69 @@ public class WallCheck : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(transform.position + transform.forward + posAdd, new Vector3(_boxCastX, _boxCastY, _boxCastZ));
+        Gizmos.DrawWireCube(transform.position + transform.forward + _posAddFowardMidle, 
+            new Vector3(_boxCastFowardMidleX, _boxCastFowardMidleY, _boxCastFowardMidleZ));
 
-        Vector3 start = this.transform.position + transform.up * 4;
-        Vector3 end = start + transform.forward * _upLayerLong;
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(start, end);
+        //正面上のRay
+        Vector3 startUp1 = this.transform.position + transform.up * _upWallCheckLayLongY;
+        Vector3 endUp1 = startUp1 + transform.forward * _upWallCheckLayLongZ;
 
-        Vector3 start2 = this.transform.position + -transform.up * _downLong;
-        Vector3 end2 = start2 + transform.forward * _upLayerLong;
+        Vector3 startUp2 = transform.right + this.transform.position + transform.up * _upWallCheckLayLongY;
+        Vector3 endUp2 = startUp2 + transform.forward * _upWallCheckLayLongZ;
+
+        Vector3 startUp3 = -transform.right + this.transform.position + transform.up * _upWallCheckLayLongY;
+        Vector3 endUp3 = startUp3 + transform.forward * _upWallCheckLayLongZ;
+
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(start2, end2);
+        Gizmos.DrawLine(startUp1, endUp1);
+        Gizmos.DrawLine(startUp2, endUp2);
+        Gizmos.DrawLine(startUp3, endUp3);
+
+        //正面下のRay
+        Vector3 startDown = this.transform.position + -transform.up * _downWallCheckLayLongY;
+        Vector3 endDown = startDown + transform.forward * _downWallCheckLayLongZ;
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(startDown, endDown);
+
+
+        //WallRUn用横のRay
+        Gizmos.color = Color.yellow;
+        Vector3 rightEnd = transform.position + transform.right * _checkWallRayDistace;
+        Vector3 leftEnd = transform.position + -transform.right * _checkWallRayDistace;
+        Gizmos.DrawLine(transform.position, rightEnd);
+        Gizmos.DrawLine(transform.position, leftEnd);
     }
 
 
     /// <summary>段差チェック</summary>
     public void CheckClimbWall()
     {
-        Vector3 start = this.transform.position + transform.up * 4;
-        Vector3 end = start + transform.forward * _upLayerLong;
+        //上のRay(正面の上に壁があるかどうか)
+        Vector3 startUp1 = this.transform.position + transform.up * _upWallCheckLayLongY;
+        Vector3 endUp1 = startUp1 + transform.forward * _upWallCheckLayLongZ;
 
-        Vector3 start2 = this.transform.position + -transform.up * _downLong;
-        Vector3 end2 = start2 + transform.forward * _upLayerLong;
+        Vector3 startUp2 = transform.right + this.transform.position + transform.up * _upWallCheckLayLongY;
+        Vector3 endUp2 = startUp2 + transform.forward * _upWallCheckLayLongZ;
 
-        _UpWall = Physics.Linecast(start, end, _layerClimbWall); // 引いたラインに何かがぶつかっていたら true とする
-        Quaternion r = Camera.main.transform.rotation;
+        Vector3 startUp3 = -transform.right + this.transform.position + transform.up * _upWallCheckLayLongY;
+        Vector3 endUp3 = startUp3 + transform.forward * _upWallCheckLayLongZ;
 
-        _fowardWall = Physics.BoxCast(transform.position + posAdd, new Vector3(_boxCastX, _boxCastY, _boxCastZ), transform.forward, out hitFowardWal, r, 1.0f, _layerClimbWall);
+        bool upWallMidle = Physics.Linecast(startUp1, endUp1, _layerClimbWall);
+        bool upWallRight = Physics.Linecast(startUp2, endUp2, _layerClimbWall);
+        bool upWallLeft = Physics.Linecast(startUp3, endUp3, _layerClimbWall);
+
+        //下のRay(正面の足元に壁があるかどうか)
+        Vector3 startDown = this.transform.position + -transform.up * _downWallCheckLayLongY;
+        Vector3 endDown = startDown + transform.forward * _downWallCheckLayLongZ;
+
+        _downWall = Physics.Linecast(startDown, endDown, _layerClimbWall);
+
+        //正面の壁
+        _fowardWall = Physics.BoxCast(transform.position + _posAddFowardMidle, new Vector3(_boxCastFowardMidleX, _boxCastFowardMidleY, _boxCastFowardMidleZ), transform.forward, out hitFowardWal, Quaternion.identity, 1.0f, _layerClimbWall);
 
 
 
-        _downWall = Physics.Linecast(start2, end2, _layerClimbWall);
-
-        if (!_UpWall && _fowardWall)
+        if ((!upWallMidle && !upWallLeft && ! upWallRight) &&( _fowardWall || _downWall))
         {
             _isClimb = true;
         }
@@ -120,16 +160,16 @@ public class WallCheck : MonoBehaviour
     /// <summary>壁に近いかどうかを判断する</summary>
     public bool CheckWallLeft()
     {
-        m_leftWallHit = Physics.Raycast(transform.position, -transform.right, out m_leftWall, m_checkWallRayDistace, _wallLayer);
-        return m_leftWallHit;
+        _leftWallHit = Physics.Raycast(transform.position, -transform.right, out m_leftWall, _checkWallRayDistace, _wallLayer);
+        return _leftWallHit;
     }
 
 
     /// <summary>壁に近いかどうかを判断する</summary>
     public bool CheckWallRight()
     {
-        m_rightWallHit = Physics.Raycast(transform.position, transform.right, out m_rightWall, m_checkWallRayDistace, _wallLayer);
-        return m_rightWallHit;
+        _rightWallHit = Physics.Raycast(transform.position, transform.right, out m_rightWall, _checkWallRayDistace, _wallLayer);
+        return _rightWallHit;
     }
 
 }

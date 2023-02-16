@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+
+/// <summary>アイテム欄のアイテムの
+/// EentTriggerに設定する関数と、情報を持つ</summary>
 public class ItemUIShowInformation : MonoBehaviour
 {
     [Tooltip("アイテムのイメージ")]
@@ -43,19 +46,26 @@ public class ItemUIShowInformation : MonoBehaviour
     private Sprite _defultSprite;
     public Sprite DefultSprite { get => _defultSprite; set => _defultSprite = value; }
 
+
+    /// <summary>マウスカーソルが乗った時の処理</summary>
     public void On()
     {
-
+        //アイテム欄の詳細を切り替える
         _informationText.text = _information;
+        //アイテム欄の名前を切り替える
         _nameText.text = _name;
+        //アイテム欄のイメージを切り替える
         _bigItemImage.sprite = _itemImage;
-        
     }
 
+    /// <summary>マウスカーソルが離れた時の処理</summary>
     public void Of()
     {
+        //アイテム欄の詳細を切り替える
         _informationText.text = "";
+        //アイテム欄の名前を切り替える
         _nameText.text = "";
+        //アイテム欄のイメージを切り替える
         _bigItemImage.sprite = _defultSprite;
     }
 
