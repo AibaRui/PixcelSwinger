@@ -1,49 +1,65 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class MissionDetail : MonoBehaviour
 {
-    [Header("開始時に話す言葉")]
-    [SerializeField] List<string> _acceptMissionText = new List<string>();
-    [Header("再度、話したときの言葉")]
-    [SerializeField] List<string> _receivedMissionText = new List<string>();
-    [Header("終わった時の言葉")]
-    [SerializeField] List<string> _endMissionText = new List<string>();
+    Mission _mission;
 
-    [SerializeField] private int _talkMissionNum = 0;
+    [Header("最初に必要な関数を呼ぶ")]
+    [SerializeField]
+    private UnityEvent _missionSettingEvent;
 
-    /// <summary>Talkの_進行度を表す</summary>
-    private int _talkMissionEndNum = 0;
-    public int TalkMissionNum => _talkMissionEndNum;
+    [Header("最初に必要なものを出す")]
+    [SerializeField]
+    private　List<GameObject> _missionSettingObject = new List<GameObject>();
 
-    /// <summary>Enterの_進行度を表す</summary>
-    private int _enterMissionNum = 0;
+    [Header("クリア後に消すもの")]
+    [SerializeField]
+    private List<GameObject> _endTaskActiveFalseObject = new List<GameObject>();
 
-    /// <summary>GetItemの_進行度を表す</summary>
-    private int _getItemMissionNum = 0;
+    [Header("報酬として行うもの")]
+    [SerializeField]
+    private UnityEvent _rewardEvent;
 
-    void Start()
+    [Header("詳細番号")]
+    [SerializeField] private int _missionDetailNum;
+
+
+    [Header("会話のタスクの時のみ参照させる")]
+    [SerializeField]
+    TalkBase _talkBase;
+
+    /// <summary>登録される</summary>
+    /// <param name="mission"></param>
+    public void Init(Mission mission)
     {
+        _mission = mission;
 
+        Debug.Log($"タスク開始:{_mission.MissionNum}-{_missionDetailNum}");
+
+        _missionSettingEvent?.Invoke();
+        _missionSettingObject.ForEach(i => i?.SetActive(true));
     }
 
-
-    void Update()
+    /// <summary>クリアしたことを通知される</summary>
+    public void ClearMissionTask()
     {
-
+        _rewardEvent?.Invoke();
+        _endTaskActiveFalseObject.ForEach(i => i?.SetActive(false));
+        _mission.GoNextMission();
     }
 
-    /// <summary>現在のミッションの進行度の確認をする</summary>
-    public bool CheckMission()
+    public void CheckReward()
     {
-        if (_talkMissionEndNum == _talkMissionNum)
-        {
-            return true;
-        }
-        return false;
-    }
+        _rewardEvent?.Invoke();
 
+        _missionSettingObject.ForEach(i => i?.SetActive(true));
+        _endTaskActiveFalseObject.ForEach(i => i?.SetActive(false));
+
+        if(_talkBase!=null)    _talkBase.TalkNum = 1;
+    }
 
 }
 

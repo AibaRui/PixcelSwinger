@@ -11,9 +11,28 @@ public class PlayerInput : MonoBehaviour
     [SerializeField] private KeyCode right = KeyCode.D;
     [SerializeField] private KeyCode jump = KeyCode.Space;
 
+    [Header("曲の再生/一時停止")]
+    [SerializeField] private KeyCode _muiscStartAndStop = KeyCode.Q;
+    [Header("曲の再生キー")]
+    [SerializeField] private KeyCode _muiscChenge = KeyCode.E;
+
+
     /// <summary>キーによる方向</summary>
     private Vector3 inputVector;
     public Vector3 InputVector => inputVector;
+
+    [Tooltip("曲の再生/一時停止")]
+    private bool _isMusicStartAndStop;
+
+    public bool IsMusicStartAndStop => _isMusicStartAndStop;
+
+    [Tooltip("曲の変更")]
+    private bool _isMusicChange;
+
+    public bool IsMusicChange => _isMusicChange;
+ 
+
+
 
     [Tooltip("スペースを押す")]
     private bool _isJumping;
@@ -42,6 +61,7 @@ public class PlayerInput : MonoBehaviour
     private float _isMouseScrol = 0;
 
     public float IsMouseScrol => _isMouseScrol;
+
 
 
     [Tooltip("Tab_押す")]
@@ -120,6 +140,13 @@ public class PlayerInput : MonoBehaviour
         _isLeftShift = Input.GetKey(KeyCode.LeftShift);
 
         _isMouseScrol = Input.GetAxis("Mouse ScrollWheel");
+
+
+        //曲の再生/一時停止
+        _isMusicStartAndStop = Input.GetKeyDown(_muiscStartAndStop);
+
+        //曲の変更
+        _isMusicChange = Input.GetKeyDown(_muiscChenge);
     }
 
     private void Update()

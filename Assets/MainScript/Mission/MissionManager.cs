@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class MissionManager : MonoBehaviour
 {
-
+    [Header("実装してあるミッション")]
     [SerializeField] private List<Mission> _missionBases = new List<Mission>();
 
     [Header("ゲーム画面のミッションの詳細のText")]
@@ -18,26 +18,43 @@ public class MissionManager : MonoBehaviour
     [Header("インベントリのミッションの詳細のText")]
     [SerializeField] private Text _inventoryMissionDetailText;
 
-    Mission _nowMainMission;
-
-    public Mission NowMainMission => _nowMainMission;
-
-    int _nowMissionNum = 0;
-
-    private bool _isAcceptMission = false;
-
-    public bool IsAcceptMission { get => _isAcceptMission; }
-
     [SerializeField] private CheckMission _checkMission;
 
+
+    [Tooltip("現在のミッションの番号を表す")]
+    private int _nowMissionNum = 0;
+
+    private int _nowDetailMissionNum = 0;
+
+    public int NowDetailMissionNum { get => _nowDetailMissionNum; set => _nowDetailMissionNum = value; }
+
+
+    private int _clearMissionNum = 0;
+
+    private int _clearMissionDetailNum = 0;
+
+    private bool _isClearMission = false;
+
+    public int ClearMissionNum { get => _clearMissionNum; set => _clearMissionNum = value; }
+    public int ClearMissionDetailNum { get => _clearMissionDetailNum; set => _clearMissionDetailNum = value; }
+
+
+    public bool IsClear { get => _isClearMission; set => _isClearMission = value; }
+
+
+    [SerializeField] SaveManager _saveManager;
+
+    [Tooltip("現在ミッションを受け付けているかどうか")]
+    private bool _isAcceptMission = false;
+    [Tooltip("ミッションがのこっているかどうか")]
+    private bool _isCompletedMission = false;
+
+    private Mission _nowMainMission;
+
+    public Mission NowMainMission => _nowMainMission;
+    public bool IsAcceptMission { get => _isAcceptMission; }
     public CheckMission CheckMission { get => _checkMission; }
-
-
-    private bool _isNoMission = false;
-
-    public bool IsNoMission { get => _isNoMission; }
-
-
+    public bool IsCompletedMission { get => _isCompletedMission; }
 
     public MainMissionSituation _mainMissionSituation = MainMissionSituation.NoAcceptMission;
 
@@ -54,104 +71,167 @@ public class MissionManager : MonoBehaviour
 
         //ミッションクリア
         ClearMission,
-
-    }
-
-    void Start()
-    {
-        MissionSet();
     }
 
     /// <summary>ゲーム画面のミッションの詳細のTextを書き換える</summary>
-    public void SettingMissionText(string mission,string detail)
+    public void SettingMissionText(string mission, string detail)
     {
         _inventoryMissionText.text = mission;
         _missionDetailFromMainUIText.text = mission;
         _inventoryMissionDetailText.text = detail;
     }
 
-
-    public void EndMission()
+    private void Start()
     {
-        //ミッションクリア後の、したい処理を実行
-        _missionBases[_nowMissionNum].MissionClear();
-        _nowMainMission = null;
 
-        //現在、ミッションを受けていない状態に変更
-        _isAcceptMission = false;
+    }
 
+    /// <summary>NewGameの初期設定</summary>
+    public void SetNewSetting()
+    {
+        //次のミッションの受付のセリフをあらかじめ登録しておく
+        _missionBases[_nowMissionNum].SetTalks();
+        _clearMissionNum = 0;
+        _clearMissionDetailNum = 0;
+        _isClearMission = false;
+    }
+
+    public void Save()
+    {
+        _saveManager.DaveSave();
+    }
+
+
+    /// <summary>ミッションの進行度をセーブデータの所まで戻す</summary>
+    public void DataLode(int missionNum, int detailNum, bool isClear)
+    {
+        _clearMissionNum = missionNum;
+        _clearMissionDetailNum = detailNum;
+        _isClearMission = isClear;
+
+        //クリアしてるミッションの、全報酬を得る
+        for (int i = 0; i < missionNum - 1; i++)
+        {
+            foreach (var a in _missionBases[i].MissionDetails)
+            {
+                a.CheckReward();
+            }
+            _missionBases[i].CheckReward();
+        }
+
+        //現在のミッションの受けている番号を設定
+        _nowMissionNum = missionNum;
+        _nowMainMission = _missionBases[_nowMissionNum - 1];
+
+        //そのミッションをクリアしていたら。ミッション報酬も受け取る
+        if (isClear)
+        {
+            foreach (var a in _missionBases[missionNum - 1].MissionDetails)
+            {
+                a.CheckReward();
+            }
+
+
+            ClearNowMission();
+        }
+        else　//ミッションをクリアしていなかったらミッション報酬はなし
+        {
+
+            _missionBases[_nowMissionNum - 1].SetTalks();
+            _checkMission.TalkNum = 1;
+
+            for (int i = 0; i < detailNum; i++)
+            {
+                _nowMainMission.MissionDetails[i].CheckReward();
+            }
+
+                _nowMainMission.NowDetailMissionNum = detailNum;
+                _nowMainMission.GoNextMission();
+
+            _isAcceptMission = true;
+            _isClearMission = false;
+        }
+
+
+    }
+
+
+    /// <summary>次のミッションをセット
+    /// 次のミッションを受け付けた時に呼ぶ</summary>
+    public void GoNextMission()
+    {
+        _isAcceptMission = true;
+        _isClearMission = false;
 
         _nowMissionNum++;
+        _clearMissionNum = _nowMissionNum;
 
-        //ミッションが余っていたら、次のミッションをセット。
-        if (_missionBases.Count != _nowMissionNum)
+        _missionBases[_nowMissionNum - 1].StartMission();
+        _nowMainMission = _missionBases[_nowMissionNum - 1];
+
+
+    }
+
+    /// <summary>現在のミッションをクリア
+    /// ミッションクリア後に離したときに呼ぶ</summary>
+    public void ClearNowMission()
+    {
+        _nowMainMission.ClearMission();
+        _nowMainMission = null;
+
+        _isAcceptMission = false;
+        _isClearMission = true;
+
+        if (_nowMissionNum == _missionBases.Count)
         {
-            MissionSet();
+            //ミッションすべて完了
+            _isCompletedMission = true;
         }
         else
         {
-            _isNoMission = true;
-        }
-    }
-
-    /// <summary>話が終わった後の処理</summary>
-    public void TalkEnd()
-    {
-        if (_nowMissionNum < _missionBases.Count)
-        {
-            //ミッションを受け付けている
-            if (_isAcceptMission)
-            {
-                //ミッションクリアしていたら
-                if (_missionBases[_nowMissionNum].IsMissionCompleted)
-                {
-                    //ミッションクリア処理
-                    EndMission();
-                }
-            }
-            else//ミッションをしていない
-            {
-                _isAcceptMission = true;
-            }
+            //次のミッションの受付のセリフをあらかじめ登録しておく
+            _missionBases[_nowMissionNum].SetTalks();
         }
 
-
+        Save();
     }
 
-    void MissionSet()
-    {
-        _missionBases[_nowMissionNum].Init(this);
-        _nowMainMission = _missionBases[_nowMissionNum];
-    }
 
-    /// <summary>ミッションの確認で話したときに呼ぶ</summary>
+    /// <summary>ミッションの確認で話したときに呼ぶ
+    /// ミッションの状況を判別</summary>
     public void CheckMissionToTalk()
     {
+        if (_isCompletedMission)   //ミッションがない
+        {
+            _mainMissionSituation = MainMissionSituation.NoMission;
+            return;
+        }
         //ミッションがある場合
-        if (_missionBases.Count != _nowMissionNum)
+        else if (_missionBases.Count >= _nowMissionNum)
         {
             //ミッションを受けている最中
             if (_isAcceptMission)
             {
                 //ミッションクリアしている
-                if (_missionBases[_nowMissionNum].IsMissionCompleted)
+                if (_missionBases[_nowMissionNum - 1].IsMissionCompleted)
                 {
                     _mainMissionSituation = MainMissionSituation.ClearMission;
+                   // Debug.Log("クリア");
+                    return;
                 }
                 else　//ミッションクリアしていない
                 {
                     _mainMissionSituation = MainMissionSituation.RecebedMission;
+                    //Debug.Log("受けている");
+                    return;
                 }
             }
             else  //ミッションを受けていない
             {
                 _mainMissionSituation = MainMissionSituation.NoAcceptMission;
-                _nowMainMission.StartMission();
+               // Debug.Log("受けてない");
+                return;
             }
-        }
-        else    //ミッションがない
-        {
-            _mainMissionSituation = MainMissionSituation.NoMission;
         }
     }
 }

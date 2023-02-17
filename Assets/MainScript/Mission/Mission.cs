@@ -2,15 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Linq;
 
 public class Mission : MonoBehaviour
 {
+
+    [Header("ミッションの番号")]
+    [SerializeField] private int _missionNum;
+
+
     [Header("ミッションの簡潔な内容")]
     [SerializeField] private string _missionDetail;
 
     [Header("インベントリに表記する次のミッション内容")]
     [SerializeField] private string _missionLongDetail;
-
 
 
     [Header("ミッション開始時に出したいもの")]
@@ -35,16 +40,30 @@ public class Mission : MonoBehaviour
     [Header("クリアしたときのセリフ")]
     [SerializeField] protected List<string> _endMissionText = new List<string>();
 
+    [Header("このミッションのタスク")]
+    [SerializeField] private List<MissionDetail> _missionDetails = new List<MissionDetail>();
 
 
-    [Header("ミッションの番号")]
-    [SerializeField]
-    private int _missionNum;
+    [Header("ミッション終了時に消すもの")]
+    [SerializeField] private List<GameObject> _endActiveFalses = new List<GameObject>();
 
 
-    private int _missionClearNum;
+    public List<MissionDetail> MissionDetails => _missionDetails;
 
-    protected MissionManager _missionManager = null;
+    private MissionDetail _nowMissionDetail;
+
+    public MissionDetail NowMissionDetail => _nowMissionDetail;
+
+
+
+    public int MissionNum => _missionNum;
+
+
+    private int _nowDetailMissionNum = 0;
+
+    public int NowDetailMissionNum { get => _nowDetailMissionNum; set => _nowDetailMissionNum = value; }
+
+    [SerializeField] MissionManager _missionManager = null;
 
     protected bool _isMissionCompleted = false;
 
@@ -54,45 +73,65 @@ public class Mission : MonoBehaviour
     protected int _enterMissionCount = 0;
 
 
-    /// <summary>MissionManagerをセットする関数</summary>
-    /// <param name="missionManager"></param>
-    public void Init(MissionManager missionManager)
+    public void SetTalks()
     {
-        _missionManager = missionManager;
         _missionManager.CheckMission.AcceptMissionText = _acceptMissionText;
         _missionManager.CheckMission.ReceivedText = _receivedMissionText;
         _missionManager.CheckMission.EndText = _endMissionText;
-
     }
 
+    /// <summary>Missionを始める関数</summary>
+    /// <param name="missionManager"></param>
     public void StartMission()
     {
-        _firstEvent?.Invoke();
-        _missionManager.SettingMissionText(_missionDetail, _missionLongDetail);
+        Debug.Log($"ミッション:{_missionNum}開始");
+        GoNextMission();
     }
-
-    public void CheckMission()
+    /// <summary>次のタスクを登録する</summary>
+    public void GoNextMission()
     {
-        _missionClearNum++;
+        _missionManager.ClearMissionDetailNum = _nowDetailMissionNum;
+        _nowDetailMissionNum++;
 
-        if (_missionClearNum == _missionNum)
+        _missionManager.NowDetailMissionNum = _nowDetailMissionNum;
+
+        if (_missionDetails.Count >= _nowDetailMissionNum)
         {
-            _endEvent?.Invoke();
-            _isMissionCompleted = true;
-            MissionClear();
+
+            _missionDetails[_nowDetailMissionNum - 1].Init(this);
+            _nowMissionDetail = _missionDetails[_nowDetailMissionNum - 1];
         }
+        else
+        {
+            Debug.Log($"{_missionDetails.Count}>={_nowDetailMissionNum}");
+            //_missionManager.ClearNowMission();
+            _isMissionCompleted = true;
+        }
+
+        _missionManager.Save();
     }
 
-    /// <summary>クエスト完了した時に実行</summary>
-    public void MissionClear()
+    public void ClearMission()
     {
-        Debug.Log("Clear");
+        _endActiveFalses.ForEach(i => i.SetActive(false));
+        _endEvent?.Invoke();
+    }
+
+
+    public void CheckReward()
+    {
+        _endActiveFalses.ForEach(i => i.SetActive(false));
+        _endEvent?.Invoke();
     }
 
 }
 
+
+
+
+
 [System.Serializable]
- public class TalkEvents
+public class TalkEvents
 {
     [SerializeField] private UnityEvent _unityEvent;
 

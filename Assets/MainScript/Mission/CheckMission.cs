@@ -34,14 +34,17 @@ public class CheckMission : TalkBase
         {
             _nowTalkText.Clear();
             _nowTalkText.Add("今、ミッションはないよ");
+            return;
         }  //ミッションがあるが、受けていない
         else if (_missionManager._mainMissionSituation == MissionManager.MainMissionSituation.NoAcceptMission)
         {
             _nowTalkText = _acceptMissionText;
+            return;
         }  //ミッション進行中
         else if (_missionManager._mainMissionSituation == MissionManager.MainMissionSituation.RecebedMission)
         {
             _nowTalkText = _receivedMissionText;
+            return;
         }
         else  //ミッション完了している
         {
@@ -69,7 +72,14 @@ public class CheckMission : TalkBase
 
     protected override void TalkEndEvent()
     {
-        _missionManager.TalkEnd();
+        if (_missionManager._mainMissionSituation == MissionManager.MainMissionSituation.NoAcceptMission)
+        {
+            _missionManager.GoNextMission();
+        }
+        else if (_missionManager._mainMissionSituation == MissionManager.MainMissionSituation.ClearMission)
+        {
+            _missionManager.ClearNowMission();
+        }
     }
 
 

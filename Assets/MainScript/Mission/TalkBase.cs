@@ -28,6 +28,8 @@ public abstract class TalkBase : MonoBehaviour
 
     protected int _talkedNum = 0;
 
+    public int TalkNum { get => _talkedNum; set => _talkedNum = value; }
+
     private void Awake()
     {
         _itemManager = GameObject.FindObjectOfType<ItemManager>();
