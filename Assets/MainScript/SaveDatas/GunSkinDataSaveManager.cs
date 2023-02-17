@@ -4,10 +4,13 @@ using UnityEngine;
 using System.Linq;
 using System.IO;
 
-public class GunSkinDataSaveManager : MonoBehaviour
+public class GunSkinDataSaveManager : SaveManagerBase
 {
+    [Tooltip("セーブしたい内容")]
+    private string _saveDataString;
 
-    [SerializeField] GunSkinManager _gunSkinManager;
+    [Tooltip("セーブしたい内容を保持するクラス")]
+    GunSkinSaveData _save;
 
     //ファイルのパス
     string filePath;
@@ -15,30 +18,38 @@ public class GunSkinDataSaveManager : MonoBehaviour
     void Awake()
     {
         filePath = Application.persistentDataPath + "/" + ".gunskinsavedata.json";
+    }
 
-        //NewGameの際は、初期装備を持たせる
-        if (CheckSaveDataExistence.s_isNewGame) NewGameLoad();
-        //Continuの場合は、セーブデータから読み込む
-        else Load();
+    /// <summary>セーブする内容を更新する</summary>
+    /// <param name="saveData">セーブしたいデータ</param>
+    public void SaveDataUpDate(string[] saveData)
+    {
+        _saveDataString = string.Join(",", saveData);
+        _saveDataString = string.Join(",", saveData);
+        Debug.Log("アイテムの保存データを更新" + _saveDataString);
+    }
+
+    /// <summary>保存していた内容を返す</summary>
+    /// <returns></returns>
+    public string GetSaveData()
+    {
+        return _save._getGunSkinNameSaveData;
     }
 
     // 省略。以下のSave関数やLoad関数を呼び出して使用すること
-
-    public void Save()
+    public override bool Save()
     {
-        var data = string.Join(',', _gunSkinManager.GetGunSkinSaveData.ToArray());
-        GunSkinSaveData _save = new GunSkinSaveData(data);
-        Debug.Log("所持している銃のスキンをセーブしました");
+        _save = new GunSkinSaveData(_saveDataString);
+        Debug.Log("所持している銃のスキンをセーブしました" + _save._getGunSkinNameSaveData);
 
         string json = JsonUtility.ToJson(_save);
         StreamWriter streamWriter = new StreamWriter(filePath);
         streamWriter.Write(json); streamWriter.Flush();
         streamWriter.Close();
-
-
+        return true;
     }
 
-    public void Load()
+    public override bool Load()
     {
         if (File.Exists(filePath))
         {
@@ -54,20 +65,12 @@ public class GunSkinDataSaveManager : MonoBehaviour
             streamReader.Close();
 
             //データを復元
-            GunSkinSaveData _save = JsonUtility.FromJson<GunSkinSaveData>(data);
-            var lodeDta = _save._getGunSkinNameSaveData.Split(",");
-            //持っているスキンを追加する
-            _gunSkinManager.DataLode(lodeDta);
+            _save = JsonUtility.FromJson<GunSkinSaveData>(data);
 
-            Debug.Log("所持している銃のスキンをロードしました");
+            _saveDataString = _save._getGunSkinNameSaveData;
+
+            Debug.Log("所持している銃のスキンをロードしました" + _save._getGunSkinNameSaveData);
         }
+        return true;
     }
-
-    /// <summary>NewGameの際のデータロード
-    /// 初期で持っているものを追加する</summary>
-    public void NewGameLoad()
-    {
-        _gunSkinManager.DataLode(_gunSkinManager.FirstSkinData.ToArray());
-    }
-
 }

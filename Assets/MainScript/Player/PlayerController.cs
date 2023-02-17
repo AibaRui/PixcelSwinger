@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour,ISave
 {
 
     [SerializeField]
@@ -67,6 +67,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private UIShowSystem _uiShowSystem;
 
+    [SerializeField] private PlayerPositionSaveManager _playerPositionSaveManager;
+
     public UIShowSystem UIShowSystem => _uiShowSystem;
 
     public InventoryManager InventoryManager => _inventoryManager;
@@ -113,6 +115,13 @@ public class PlayerController : MonoBehaviour
     private GameObject _thisPlayer;
 
     public GameObject Player { get => _thisPlayer; }
+
+    /// <summary>インターフェイス。データのロードを揃えるための関数</summary>
+    public void FistDataLodeOnGameStart()
+    {
+        _playerPositionSaveManager.SetPlayerPosition();
+    }
+
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -133,5 +142,6 @@ public class PlayerController : MonoBehaviour
     {
         _stateMachine.LateUpdate();
     }
+
 
 }

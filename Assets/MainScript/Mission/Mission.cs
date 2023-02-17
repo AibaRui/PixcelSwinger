@@ -91,9 +91,10 @@ public class Mission : MonoBehaviour
     public void GoNextMission()
     {
         _missionManager.ClearMissionDetailNum = _nowDetailMissionNum;
-        _nowDetailMissionNum++;
+
 
         _missionManager.NowDetailMissionNum = _nowDetailMissionNum;
+        _nowDetailMissionNum++;
 
         if (_missionDetails.Count >= _nowDetailMissionNum)
         {

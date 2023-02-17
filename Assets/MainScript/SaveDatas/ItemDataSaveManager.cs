@@ -4,40 +4,57 @@ using UnityEngine;
 using System.Linq;
 using System.IO;
 
-public class ItemDataSaveManager : MonoBehaviour
+public class ItemDataSaveManager : SaveManagerBase
 {
-    string filePath;
-    ItemSaveData _save;
+    [Tooltip("セーブしたい内容")]
+    private string _saveDataString;
 
-    [SerializeField] ItemManager _itemManager;
+    [Tooltip("セーブしたい内容を保持するクラス")]
+    private ItemSaveData _save;
+
+    private string filePath;
+
+    public ItemSaveData SaveData => _save;
+
 
     void Awake()
     {
         filePath = Application.persistentDataPath + "/" + ".itemsavedata.json";
-
-        //NewGameの際は、初期装備を持たせる
-        if (CheckSaveDataExistence.s_isNewGame) FirstStart();
-        //Continueの際は、セーブデータから読み込む
-        else Load();
     }
 
 
-    public void Save()
-    {   
-        //Listの中身を、,区切りの文字列に変換して保存
-        string data = string.Join(",", _itemManager.GetItemSaveData.ToArray());
-        _save = new ItemSaveData(data);
+    /// <summary>セーブする内容を更新する</summary>
+    /// <param name="saveData">セーブしたいデータ</param>
+    public void SaveDataUpDate(string[] saveData)
+    {
+        _saveDataString = string.Join(",", saveData);
+        Debug.Log("アイテムの保存データを更新" + _saveDataString);
+    }
 
-        Debug.Log("所持しているアイテムをセーブしました");
+    /// <summary>保存していた内容を返す</summary>
+    /// <returns></returns>
+    public string GetSaveData()
+    {
+        return _save._getItemNameSaveData;
+    }
+
+
+    /// <summary>セーブする</summary>
+    public override bool Save()
+    {
+        //Listの中身を、,区切りの文字列で保存
+        _save = new ItemSaveData(_saveDataString);
+        Debug.Log("所持しているアイテムをセーブしました" + _save._getItemNameSaveData);
 
         string json = JsonUtility.ToJson(_save);
         StreamWriter streamWriter = new StreamWriter(filePath);
         streamWriter.Write(json); streamWriter.Flush();
         streamWriter.Close();
-
+        return true;
     }
 
-    public void Load()
+    /// <summary>ロードする</summary>
+    public override bool Load()
     {
         if (File.Exists(filePath))
         {
@@ -47,16 +64,11 @@ public class ItemDataSaveManager : MonoBehaviour
             streamReader.Close();
             _save = JsonUtility.FromJson<ItemSaveData>(data);
 
-            Debug.Log("所持しているアイテムをロードしました");
-            var LodeData = _save._getItemNameSaveData.Split(",");
-            _itemManager.DataLode(LodeData);
+            _saveDataString = _save._getItemNameSaveData;
+
+            Debug.Log("所持しているアイテムをロードしました" + _save._getItemNameSaveData);
+
         }
+        return true;
     }
-
-
-    public void FirstStart()
-    {
-        _itemManager.DataLode(_itemManager.FirstGetItem.ToArray());
-    }
-
 }

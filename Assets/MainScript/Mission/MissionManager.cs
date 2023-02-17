@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class MissionManager : MonoBehaviour
+public class MissionManager : MonoBehaviour, ISave
 {
     [Header("実装してあるミッション")]
     [SerializeField] private List<Mission> _missionBases = new List<Mission>();
@@ -20,13 +20,14 @@ public class MissionManager : MonoBehaviour
 
     [SerializeField] private CheckMission _checkMission;
 
+    [SerializeField] private MissionDataSaveManager _missionDataSaveManager;
+
+    [SerializeField] SaveManager _saveManager;
 
     [Tooltip("現在のミッションの番号を表す")]
     private int _nowMissionNum = 0;
-
+    [Tooltip("現在のミッションの詳細番号を表す")]
     private int _nowDetailMissionNum = 0;
-
-    public int NowDetailMissionNum { get => _nowDetailMissionNum; set => _nowDetailMissionNum = value; }
 
 
     private int _clearMissionNum = 0;
@@ -35,22 +36,19 @@ public class MissionManager : MonoBehaviour
 
     private bool _isClearMission = false;
 
-    public int ClearMissionNum { get => _clearMissionNum; set => _clearMissionNum = value; }
-    public int ClearMissionDetailNum { get => _clearMissionDetailNum; set => _clearMissionDetailNum = value; }
 
-
-    public bool IsClear { get => _isClearMission; set => _isClearMission = value; }
-
-
-    [SerializeField] SaveManager _saveManager;
+    private Mission _nowMainMission;
 
     [Tooltip("現在ミッションを受け付けているかどうか")]
     private bool _isAcceptMission = false;
     [Tooltip("ミッションがのこっているかどうか")]
     private bool _isCompletedMission = false;
 
-    private Mission _nowMainMission;
 
+    public int NowDetailMissionNum { get => _nowDetailMissionNum; set => _nowDetailMissionNum = value; }
+    public int ClearMissionNum { get => _clearMissionNum; set => _clearMissionNum = value; }
+    public int ClearMissionDetailNum { get => _clearMissionDetailNum; set => _clearMissionDetailNum = value; }
+    public bool IsClear { get => _isClearMission; set => _isClearMission = value; }
     public Mission NowMainMission => _nowMainMission;
     public bool IsAcceptMission { get => _isAcceptMission; }
     public CheckMission CheckMission { get => _checkMission; }
@@ -86,6 +84,31 @@ public class MissionManager : MonoBehaviour
 
     }
 
+    public void Save()
+    {
+        SaveMission();
+        _saveManager.DaveSave();
+    }
+
+    /// <summary>インターフェイス。データのロードを揃えるための関数</summary>
+    public void FistDataLodeOnGameStart()
+    {
+        if (CheckSaveDataExistence.s_isNewGame)
+        {
+            SetNewSetting();
+        }
+        else
+        {
+            DataLodeStart();
+        }
+    }
+
+    /// <summary>ミッションの進行状況のデータを更新</summary>
+    public void SaveMission()
+    {
+        _missionDataSaveManager.SaveDataUpDate(_nowMissionNum, _nowDetailMissionNum, _isClearMission);
+    }
+
     /// <summary>NewGameの初期設定</summary>
     public void SetNewSetting()
     {
@@ -96,21 +119,15 @@ public class MissionManager : MonoBehaviour
         _isClearMission = false;
     }
 
-    public void Save()
-    {
-        _saveManager.DaveSave();
-    }
-
-
     /// <summary>ミッションの進行度をセーブデータの所まで戻す</summary>
-    public void DataLode(int missionNum, int detailNum, bool isClear)
+    public void DataLodeStart()
     {
-        _clearMissionNum = missionNum;
-        _clearMissionDetailNum = detailNum;
-        _isClearMission = isClear;
+        _clearMissionNum = _missionDataSaveManager.GetSaveDataMissionNum();
+        _clearMissionDetailNum = _missionDataSaveManager.GetSaveDataMissionDetailNum();
+        _isClearMission = _missionDataSaveManager.GetSaveDataIsClear();
 
         //クリアしてるミッションの、全報酬を得る
-        for (int i = 0; i < missionNum - 1; i++)
+        for (int i = 0; i < _clearMissionNum - 1; i++)
         {
             foreach (var a in _missionBases[i].MissionDetails)
             {
@@ -120,13 +137,13 @@ public class MissionManager : MonoBehaviour
         }
 
         //現在のミッションの受けている番号を設定
-        _nowMissionNum = missionNum;
+        _nowMissionNum = _clearMissionNum;
         _nowMainMission = _missionBases[_nowMissionNum - 1];
 
         //そのミッションをクリアしていたら。ミッション報酬も受け取る
-        if (isClear)
+        if (_isClearMission)
         {
-            foreach (var a in _missionBases[missionNum - 1].MissionDetails)
+            foreach (var a in _missionBases[_clearMissionNum - 1].MissionDetails)
             {
                 a.CheckReward();
             }
@@ -140,19 +157,20 @@ public class MissionManager : MonoBehaviour
             _missionBases[_nowMissionNum - 1].SetTalks();
             _checkMission.TalkNum = 1;
 
-            for (int i = 0; i < detailNum; i++)
+            for (int i = 0; i < _clearMissionDetailNum; i++)
             {
-                _nowMainMission.MissionDetails[i].CheckReward();
+                if (_nowMainMission.MissionDetails.Count > i)
+                {
+                    _nowMainMission.MissionDetails[i].CheckReward();
+                }
             }
 
-                _nowMainMission.NowDetailMissionNum = detailNum;
-                _nowMainMission.GoNextMission();
+            _nowMainMission.NowDetailMissionNum = _clearMissionDetailNum;
+            _nowMainMission.GoNextMission();
 
             _isAcceptMission = true;
             _isClearMission = false;
         }
-
-
     }
 
 
@@ -168,8 +186,6 @@ public class MissionManager : MonoBehaviour
 
         _missionBases[_nowMissionNum - 1].StartMission();
         _nowMainMission = _missionBases[_nowMissionNum - 1];
-
-
     }
 
     /// <summary>現在のミッションをクリア
@@ -216,7 +232,7 @@ public class MissionManager : MonoBehaviour
                 if (_missionBases[_nowMissionNum - 1].IsMissionCompleted)
                 {
                     _mainMissionSituation = MainMissionSituation.ClearMission;
-                   // Debug.Log("クリア");
+                    // Debug.Log("クリア");
                     return;
                 }
                 else　//ミッションクリアしていない
@@ -229,7 +245,7 @@ public class MissionManager : MonoBehaviour
             else  //ミッションを受けていない
             {
                 _mainMissionSituation = MainMissionSituation.NoAcceptMission;
-               // Debug.Log("受けてない");
+                // Debug.Log("受けてない");
                 return;
             }
         }
