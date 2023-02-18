@@ -25,7 +25,6 @@ public class GunSkinDataSaveManager : SaveManagerBase
     public void SaveDataUpDate(string[] saveData)
     {
         _saveDataString = string.Join(",", saveData);
-        _saveDataString = string.Join(",", saveData);
         Debug.Log("アイテムの保存データを更新" + _saveDataString);
     }
 

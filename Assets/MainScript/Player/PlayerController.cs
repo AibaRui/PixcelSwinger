@@ -51,10 +51,6 @@ public class PlayerController : MonoBehaviour,ISave
     [SerializeField]
     private PlayerVelocityLimitControl _playerVelocityLimitControl;
 
-
-    [SerializeField]
-    private MissionManager _missionManager;
-
     [SerializeField]
     private EventController _eventController;
 
@@ -94,7 +90,6 @@ public class PlayerController : MonoBehaviour,ISave
 
     public PlayerSwing PlayerSwing => _playerSwing;
 
-
     public PlayerGrapple PlayerGrapple => _playerGrapple;
 
     public PlayerClimingWall PlayerClimingWall => _playerClimbWall;
@@ -102,8 +97,6 @@ public class PlayerController : MonoBehaviour,ISave
     public PlayerGrappleAndSwingSetting PlayerSwingAndGrappleSetting { get => _playerSwingAndGrappleSetting; }
 
     public PlayerVelocityLimitControl PlayerVelocityLimitControl => _playerVelocityLimitControl;
-
-    public MissionManager MissionManager { get => _missionManager; }
 
     public WallCheck WallCheck => _wallCheck;
 

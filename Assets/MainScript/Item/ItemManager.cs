@@ -103,10 +103,11 @@ public class ItemManager : MonoBehaviour, ISave
                 }
             }
 
+                _itemDataSaveManager.SaveDataUpDate(_getItemSaveData.ToArray());
             //データをセーブ(初回のセーブ確認時はセーブしない)
             if (!_isFirstLoad)
             {
-                _itemDataSaveManager.SaveDataUpDate(_getItemSaveData.ToArray());
+
                 _saveManager.DaveSave();
             }
 

@@ -103,10 +103,11 @@ public class GunSkinManager : MonoBehaviour, ISave
             }
         }
 
+            _gunSkinDataSaveManager.SaveDataUpDate(_getGunSkinSaveData.ToArray());
         //データをセーブ(初回のセーブ確認時はセーブしない)
         if (!_isFirstLoad)
         {
-            _gunSkinDataSaveManager.SaveDataUpDate(_getGunSkinSaveData.ToArray());
+
             _saveManager.DaveSave();
         }
     }
