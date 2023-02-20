@@ -64,6 +64,14 @@ public class PlayerSwing : MonoBehaviour
 
             float distanceFromPoint = Vector3.Distance(transform.position, swingPoint);
 
+
+            if(Input.GetKey(KeyCode.LeftShift))
+            {
+                Vector3 dirs = Camera.main.transform.forward;
+                _rb.AddForce(dirs.normalized * 10);
+                Debug.Log("‰Á‘¬");
+            }
+
             if (Input.GetKey(KeyCode.Space))
             {
                 joint.maxDistance = distanceFromPoint * 0.5f;
