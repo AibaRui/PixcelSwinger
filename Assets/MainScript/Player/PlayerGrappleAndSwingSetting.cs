@@ -17,6 +17,9 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
     [Header("ワイヤーの長さ")]
     [Tooltip("ワイヤーの長さ")] [SerializeField] private List<float> _wireLongs = new List<float>();
 
+    [SerializeField] GameObject _hitPointer;
+    [SerializeField] RectTransform _hitPointerUI;
+
     private float _wireLong = 25;
 
     private int _wireLongsNum = 0;
@@ -92,9 +95,9 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
         if (_playerInput.IsMouseScrol > 0)
         {
             _wireLongsNum++;
-            if(_wireLongsNum==_wireLongs.Count)
+            if (_wireLongsNum == _wireLongs.Count)
             {
-                _wireLongsNum = _wireLongs.Count-1;
+                _wireLongsNum = _wireLongs.Count - 1;
             }
             _wireLong = _wireLongs[_wireLongsNum];
             _nowWireLongText.text = _wireLong.ToString("00");
@@ -103,7 +106,7 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
         else if (_playerInput.IsMouseScrol < 0)
         {
             _wireLongsNum--;
-            if (_wireLongsNum <0)
+            if (_wireLongsNum < 0)
             {
                 _wireLongsNum = 0;
             }
@@ -178,6 +181,34 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
         _predictionHit = raycastHit.point == Vector3.zero ? spherCastHit : raycastHit;
     }
 
+    public void ActivePointer()
+    {
+        if (!_joint)
+        {
+            return;
+        }
+
+        //マーカーの位置をスクリーン画面に変換して表示する
+        var targetWorldPos = PredictionPoint.position;
+        var targetScreenPos = Camera.main.WorldToScreenPoint(targetWorldPos);
+
+
+        _hitPointer.transform.position = targetScreenPos;
+
+        var cameraDir = Camera.main.transform.forward;
+        var targetDir = targetWorldPos - Camera.main.transform.position;
+
+        var isFront = Vector3.Dot(targetDir, cameraDir) > 0;
+        _hitPointer.SetActive(isFront);
+
+
+    }
+
+
+    public void AnAtivePointer()
+    {
+        _hitPointer.SetActive(false);
+    }
 
     /// <summary>線を描く</summary>
     public void DrawRope()
@@ -186,7 +217,6 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
         {
             return;
         }
-
         //   currentGrapplePosition = Vector3.Lerp(currentGrapplePosition, swingPoint, Time.deltaTime * 8f);
 
         //線を引く位置を決める

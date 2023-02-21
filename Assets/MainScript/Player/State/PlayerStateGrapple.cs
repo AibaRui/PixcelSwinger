@@ -18,6 +18,7 @@ public class PlayerStateGrapple : PlayerStateBase
     {
         _stateMachine.PlayerController.PlayerGrapple.StopGrapple();
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.Joint = null;
+
     }
 
     public override void FixedUpdate()
@@ -26,6 +27,8 @@ public class PlayerStateGrapple : PlayerStateBase
 
         //速度調整のスクリプト
         _stateMachine.PlayerController.PlayerVelocityLimitControl.VelocityLimit();
+        //Hit! のUIを出す
+        _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.ActivePointer();
     }
 
     public override void LateUpdate()
