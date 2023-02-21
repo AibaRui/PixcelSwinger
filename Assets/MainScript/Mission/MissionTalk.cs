@@ -6,7 +6,7 @@ using UnityEngine.Events;
 public class MissionTalk : TalkBase
 {
     [Header("開始時に話す言葉")]
-    [SerializeField] private List<string> _firstContactText = new List<string>();
+    [SerializeField, TextArea(3, 20)] private List<string> _firstContactText = new List<string>();
 
     [Header("再度、話したときの言葉")]
     [SerializeField] private List<string> _receivedMissionText = new List<string>();

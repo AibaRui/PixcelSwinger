@@ -7,6 +7,14 @@ public class MissionDetail : MonoBehaviour
 {
     Mission _mission;
 
+    [Header("ミッションの簡潔な内容")]
+    [SerializeField] private string _missionDetail;
+
+    [Header("インベントリに表記するミッション内容")]
+    [SerializeField,TextArea(20,5)] private string _missionLongDetail;
+    
+
+
     [Header("最初に必要な関数を呼ぶ")]
     [SerializeField]
     private UnityEvent _missionSettingEvent;
@@ -41,6 +49,7 @@ public class MissionDetail : MonoBehaviour
 
         _missionSettingEvent?.Invoke();
         _missionSettingObject.ForEach(i => i?.SetActive(true));
+        _mission.MissionManager.SettingMissionText(_missionDetail, _missionLongDetail);
     }
 
     /// <summary>クリアしたことを通知される</summary>

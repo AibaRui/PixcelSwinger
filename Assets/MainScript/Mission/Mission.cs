@@ -10,13 +10,11 @@ public class Mission : MonoBehaviour
     [Header("ミッションの番号")]
     [SerializeField] private int _missionNum;
 
+    [Header("ミッションの簡潔な内容(タスクをすべて終えて、確認するまでの)")]
+    [SerializeField] private string _missionLongDetailEndTask;
 
-    [Header("ミッションの簡潔な内容")]
-    [SerializeField] private string _missionDetail;
-
-    [Header("インベントリに表記する次のミッション内容")]
-    [SerializeField] private string _missionLongDetail;
-
+    [Header("インベントリに表記する次のミッション内容(タスクをすべて終えて、確認するまでの)")]
+    [SerializeField,TextArea] private string _missionDetailEndTask;
 
     [Header("ミッション開始時に出したいもの")]
     [SerializeField]
@@ -44,9 +42,11 @@ public class Mission : MonoBehaviour
     [SerializeField] private List<MissionDetail> _missionDetails = new List<MissionDetail>();
 
 
-    [Header("ミッション終了時に消すもの")]
+    [Header("ミッション終了時に_消すもの")]
     [SerializeField] private List<GameObject> _endActiveFalses = new List<GameObject>();
 
+    [Header("ミッション終了時に_出すもの")]
+    [SerializeField] private List<GameObject> _endActiveTrue = new List<GameObject>();
 
     public List<MissionDetail> MissionDetails => _missionDetails;
 
@@ -64,6 +64,8 @@ public class Mission : MonoBehaviour
     public int NowDetailMissionNum { get => _nowDetailMissionNum; set => _nowDetailMissionNum = value; }
 
     [SerializeField] MissionManager _missionManager = null;
+
+    public MissionManager MissionManager => _missionManager;
 
     protected bool _isMissionCompleted = false;
 
@@ -90,23 +92,27 @@ public class Mission : MonoBehaviour
     /// <summary>次のタスクを登録する</summary>
     public void GoNextMission()
     {
+        //クリアしたMissionの番号を更新
         _missionManager.ClearMissionDetailNum = _nowDetailMissionNum;
 
-
+        //現在のミッションの番号を登録
         _missionManager.NowDetailMissionNum = _nowDetailMissionNum;
         _nowDetailMissionNum++;
 
+        //タスクが残っていたら次のタスクを登録
         if (_missionDetails.Count >= _nowDetailMissionNum)
         {
 
             _missionDetails[_nowDetailMissionNum - 1].Init(this);
             _nowMissionDetail = _missionDetails[_nowDetailMissionNum - 1];
         }
+        //残っていなかったら、ミッション完了状態に移行
         else
         {
             Debug.Log($"{_missionDetails.Count}>={_nowDetailMissionNum}");
             //_missionManager.ClearNowMission();
             _isMissionCompleted = true;
+            _missionManager.SettingMissionText( _missionLongDetailEndTask,_missionDetailEndTask);
         }
 
         _missionManager.Save();
@@ -115,13 +121,16 @@ public class Mission : MonoBehaviour
     public void ClearMission()
     {
         _endActiveFalses.ForEach(i => i.SetActive(false));
+        _endActiveTrue.ForEach(i => i.SetActive(true));
+
         _endEvent?.Invoke();
     }
 
-
+    /// <summary>セーブデータを読み込んだ際に確認する用</summary>
     public void CheckReward()
     {
         _endActiveFalses.ForEach(i => i.SetActive(false));
+        _endActiveTrue.ForEach(i => i.SetActive(true));
         _endEvent?.Invoke();
     }
 

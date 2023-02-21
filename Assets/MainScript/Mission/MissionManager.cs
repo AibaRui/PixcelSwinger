@@ -18,6 +18,10 @@ public class MissionManager : MonoBehaviour, ISave
     [Header("インベントリのミッションの詳細のText")]
     [SerializeField] private Text _inventoryMissionDetailText;
 
+    [Header("ミッションがないときの詳細の内容")]
+    [SerializeField] private string _noMissionTextDetail;
+
+
     [SerializeField] private CheckMission _checkMission;
 
     [SerializeField] private MissionDataSaveManager _missionDataSaveManager;
@@ -77,6 +81,13 @@ public class MissionManager : MonoBehaviour, ISave
         _inventoryMissionText.text = mission;
         _missionDetailFromMainUIText.text = mission;
         _inventoryMissionDetailText.text = detail;
+    }
+
+    public void ReSetMissionText()
+    {
+        _inventoryMissionText.text = _noMissionTextDetail;
+        _missionDetailFromMainUIText.text = _noMissionTextDetail;
+        _inventoryMissionDetailText.text = "";
     }
 
     private void Start()
