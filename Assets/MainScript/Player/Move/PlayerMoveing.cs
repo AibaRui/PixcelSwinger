@@ -29,15 +29,20 @@ public class PlayerMoveing : MonoBehaviour
 
     private float _moveSpeed = 5;
 
+    [Header("最初の設定")]
+    [SerializeField] private bool _isFirstPushChange = true;
 
+    public bool IsFirstPushChange => _isFirstPushChange;
 
     /// <summary>trueの時は</summary>
     private bool _moveTypeIsWalk = true;
 
     public bool IsWalk => _moveTypeIsWalk;
 
-    private bool _isPushChangeOrPushing = true;
 
+    private bool _isPushChange = true;
+
+    public bool IsPushChange { get => _isPushChange; set => _isPushChange = value; }
 
     private Vector3 _airVelo;
 
@@ -47,15 +52,9 @@ public class PlayerMoveing : MonoBehaviour
     [SerializeField] Animator _anim;
     [SerializeField] Animator _legAnim;
 
-    private MoveSpeedChangeType _moveSpeedChangeType = MoveSpeedChangeType.Push;
+ 
 
-    public MoveSpeedChangeType MoveSpeedChangeTypes => _moveSpeedChangeType;
 
-    public enum MoveSpeedChangeType
-    {
-        Push,
-        Pushing,
-    }
 
     private void Awake()
     {
@@ -68,27 +67,26 @@ public class PlayerMoveing : MonoBehaviour
         _moveSpeed = _walkSpeed;
     }
 
-    /// <summary>ボタンで呼び出す</summary>
-    /// <param name="type"></param>
-    public void MoveSpeedChangeTypeChange(bool _isPush)
+
+
+    /// <summary>走り方の方法を変える</summary>
+    /// <param name="isPush">Trueで切り替え/Falseで押している間</param>
+    public void ChangeRunWay(bool isPush)
     {
         _moveSpeed = _walkSpeed;
 
-        if (_isPush)
+        _isPushChange = isPush;
+
+        //trueだったら切り替え
+        if (_isPushChange)
         {
-            _moveSpeedChangeType = MoveSpeedChangeType.Push;
             _moveTypeIsWalk = true;
         }
-        else
-        {
-            _moveSpeedChangeType = MoveSpeedChangeType.Pushing;
-        }
-
     }
 
     public void SpeedChange()
     {
-        if (_moveSpeedChangeType == MoveSpeedChangeType.Push)
+        if (_isPushChange)
         {
             if (_playerInput.IsLeftShiftDown)
             {

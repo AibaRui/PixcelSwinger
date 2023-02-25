@@ -6,31 +6,46 @@ using Cinemachine;
 
 public class MouseSensitivity : MonoBehaviour
 {
-    [SerializeField] Slider _sensitivitySlider;
-
-    [SerializeField] private float _firstSet = 0.5f;
-
     CinemachinePOV _camera;
     [SerializeField] CinemachineVirtualCamera _ca;
-    [SerializeField] float _maxSensitivity = 300;
-    [SerializeField] float _mixSensitivity = 50;
-    void Start()
+
+    [Header("マウス感度のSlider")]
+    [SerializeField] private Slider _mouseSensivitySlider;
+
+    public Slider MouseSensivitySlider => _mouseSensivitySlider;
+
+    [Header("初期設定のマウス感度")]
+    [SerializeField] private float _firstMouseSensivity = 100;
+
+    [Header("マウス感度の最大値")]
+    [SerializeField] private float _maxMouseSensivity = 200;
+
+    [Header("マウス感度の最小値")]
+    [SerializeField] private float _minSensitivity = 50;
+
+    private float _nowSensivity;
+
+    public float FirstMouseSensivity=>_firstMouseSensivity;
+
+    public float NowSensivity => _nowSensivity;
+
+    private void Awake()
     {
-        _camera = _ca.GetCinemachineComponent<CinemachinePOV>();
-        _sensitivitySlider = _sensitivitySlider.GetComponent<Slider>();
-
-        //スライダーの最大値の設定
-        _sensitivitySlider.maxValue = _maxSensitivity;
-
-        //スライダーの現在値の設定
-        _sensitivitySlider.minValue = _mixSensitivity;
-
-        _sensitivitySlider.value = _firstSet;
+        _mouseSensivitySlider.maxValue = _maxMouseSensivity;
+        _mouseSensivitySlider.minValue = _minSensitivity;
     }
 
     public void ChangeSensitivity(float value)
     {
+        if (_camera == null)
+        {
+            _camera = _ca.GetCinemachineComponent<CinemachinePOV>();
+        }
+
         _camera.m_HorizontalAxis.m_MaxSpeed = value;
         _camera.m_VerticalAxis.m_MaxSpeed = value;
+
+        _mouseSensivitySlider.value = value;
+        _nowSensivity = value;
     }
 }

@@ -18,7 +18,7 @@ public class PlayerStateGrapple : PlayerStateBase
     {
         _stateMachine.PlayerController.PlayerGrapple.StopGrapple();
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.Joint = null;
-
+        _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.AnAtivePointer();
     }
 
     public override void FixedUpdate()
@@ -64,20 +64,25 @@ public class PlayerStateGrapple : PlayerStateBase
         var h = _stateMachine.PlayerController.PlayerInput.HorizontalInput;
         var v = _stateMachine.PlayerController.PlayerInput.VerticalInput;
 
-        if (_stateMachine.PlayerController.GroundCheck.IsGround)
+        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickUp)
         {
-            if ((h != 0 && v != 0))
+            if (_stateMachine.PlayerController.GroundCheck.IsGround)
             {
-                _stateMachine.TransitionTo(_stateMachine.StateIdle);
-                Debug.Log("Grapple=>Idle");
-                return;
-            }
-            else
-            {
-                _stateMachine.TransitionTo(_stateMachine.StateWalk);
-                Debug.Log("Grapple=>Move");
+                if ((h != 0 && v != 0))
+                {
+                    _stateMachine.TransitionTo(_stateMachine.StateIdle);
+                    Debug.Log("Grapple=>Idle");
+                    return;
+                }
+                else
+                {
+                    _stateMachine.TransitionTo(_stateMachine.StateWalk);
+                    Debug.Log("Grapple=>Move");
+                }
             }
         }
+
+
 
     }
 

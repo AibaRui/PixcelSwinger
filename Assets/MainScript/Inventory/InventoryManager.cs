@@ -42,6 +42,10 @@ public class InventoryManager : MonoBehaviour
     [Header("武器のSpriteLendrer")]
     [SerializeField] private SpriteRenderer _gunSpriteRenderer;
 
+    private void Awake()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+    }
 
     /// <summary>インベントリを開いた時の処理</summary>
     public void InventoryOpen()
@@ -50,6 +54,7 @@ public class InventoryManager : MonoBehaviour
         _inventoryPanel.SetActive(true);
         //マウスカーソルを出す
         Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     /// <summary>インベントリを閉じた時の処理</summary>
@@ -59,6 +64,7 @@ public class InventoryManager : MonoBehaviour
         _inventoryPanel.SetActive(false);
         //マウスカーソルを消す
         Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     /// <summary>インベントリ内の武器スキン欄に、新しいスキンの追加する</summary>

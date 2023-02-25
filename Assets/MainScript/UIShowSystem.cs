@@ -10,23 +10,30 @@ public class UIShowSystem : MonoBehaviour
 
     [SerializeField] private List<GameObject> _panels = new List<GameObject>();
 
-    void Start()
-    {
+    [SerializeField] private bool _firstIsShowUI;
 
-    }
+    public bool FirstIsShowUI=>_firstIsShowUI;
+
+    private bool _isShowUI = true;
+
+    public bool IsShowUI { get => _isShowUI; set => _isShowUI = value; }
+
+
 
 
     public void ShowUI()
     {
-        if (_countTime < _setTime)
+        if (_isShowUI)
         {
-            _countTime += Time.deltaTime;
+            if (_countTime < _setTime)
+            {
+                _countTime += Time.deltaTime;
+            }
+            else
+            {
+                _panels.ForEach(i => i.SetActive(true));
+            }
         }
-        else
-        {
-            _panels.ForEach(i => i.SetActive(true));
-        }
-
     }
 
     public void CloseUI()
