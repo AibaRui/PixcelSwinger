@@ -109,6 +109,21 @@ public class PlayerController : MonoBehaviour,ISave
 
     public GameObject Player { get => _thisPlayer; }
 
+    [SerializeField] OperationsLevel _firstOperationLevl = OperationsLevel.Eazy;
+
+    public OperationsLevel FirstOperationLevel => _firstOperationLevl;
+
+    private OperationsLevel _operationLevl = OperationsLevel.Eazy;
+
+    public OperationsLevel OperationLevel { get => _operationLevl; set => _operationLevl = value; }
+
+    public enum OperationsLevel
+    {
+        Eazy,
+        Nomal,
+        Hard,
+    }
+
     /// <summary>インターフェイス。データのロードを揃えるための関数</summary>
     public void FistDataLodeOnGameStart()
     {

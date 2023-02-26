@@ -31,7 +31,6 @@ public class PlayerStateUpAir : PlayerStateBase
 
     public override void Update()
     {
-        _stateMachine.PlayerController.PlayerMoveing.LegAnimation();
 
         var h = _stateMachine.PlayerController.PlayerInput.HorizontalInput;
         var v = _stateMachine.PlayerController.PlayerInput.VerticalInput;

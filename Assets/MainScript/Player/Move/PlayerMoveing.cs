@@ -16,49 +16,48 @@ public class PlayerMoveing : MonoBehaviour
     [Header("空中でのAddする動きの速さ")]
     [Tooltip("空中でのAddする動きの速さ")] [SerializeField] float _movingSpeedOnAir = 5f;
 
-    [Header("空中で下向きに加速する速さ")]
-    [SerializeField] float _addDownAir = 5;
+    [Header("簡単_空中で下向きに加速する速さ")]
+    [SerializeField] float _addDownAirEazy = 5;
 
+    [Header("普通_空中で下向きに加速する速さ")]
+    [SerializeField] float _addDownAirNomal = 5;
+
+    [Header("空中で下向きに加速する速さ")]
     [SerializeField] bool _isDownSpeed = false;
 
     [Header("歩き_を示すパネル")]
-    [Tooltip("歩き_を示すパネル")] [SerializeField] private GameObject _walkPanel;
+    [SerializeField] private GameObject _walkPanel;
 
     [Header("走り_を示すパネル")]
-    [Tooltip("走り_を示すパネル")] [SerializeField] private GameObject _runPanel;
-
-    private float _moveSpeed = 5;
+    [SerializeField] private GameObject _runPanel;
 
     [Header("最初の設定")]
     [SerializeField] private bool _isFirstPushChange = true;
 
-    public bool IsFirstPushChange => _isFirstPushChange;
+    [SerializeField] PlayerController _playerController;
+    [SerializeField] PlayerInput _playerInput;
+    [SerializeField] PlayerVelocityLimitControl _playerVelocityLimitControl;
+
+    private float _moveSpeed = 5;
 
     /// <summary>trueの時は</summary>
     private bool _moveTypeIsWalk = true;
 
-    public bool IsWalk => _moveTypeIsWalk;
-
-
     private bool _isPushChange = true;
-
-    public bool IsPushChange { get => _isPushChange; set => _isPushChange = value; }
 
     private Vector3 _airVelo;
 
-    PlayerInput _playerInput;
 
+
+    public bool IsPushChange { get => _isPushChange; set => _isPushChange = value; }
+    public bool IsFirstPushChange => _isFirstPushChange;
+    public bool IsWalk => _moveTypeIsWalk;
     Rigidbody _rb;
-    [SerializeField] Animator _anim;
-    [SerializeField] Animator _legAnim;
-
- 
 
 
 
     private void Awake()
     {
-        _playerInput = GetComponent<PlayerInput>();
         _rb = GetComponent<Rigidbody>();
     }
 
@@ -176,12 +175,6 @@ public class PlayerMoveing : MonoBehaviour
         //Vector3 velocity = _rb.velocity;
         // velocity.y = 0f;
 
-        if (_rb.velocity.x != 0 || _rb.velocity.z != 0)
-        {
-            _anim.SetFloat("Speed", _moveSpeed);
-        }
-
-
     }
 
     /// <summary>空中での動き。AddForceで制御</summary>
@@ -209,16 +202,25 @@ public class PlayerMoveing : MonoBehaviour
             _rb.AddForce(dir.normalized * _movingSpeedOnAir, ForceMode.Force);
         }
 
-        if (_isDownSpeed) _rb.AddForce(-transform.up * _addDownAir);
+        if (_isDownSpeed)
+        {
+            var downSpeed = 0f;
+
+            if(_playerController.OperationLevel == PlayerController.OperationsLevel.Eazy)
+            {
+                downSpeed = _addDownAirEazy;
+            }
+            else
+            {
+                downSpeed = _addDownAirNomal;
+            }
+
+
+            _rb.AddForce(-transform.up * downSpeed);
+        }
+
+
     }
-
-
-
-    public void LegAnimation()
-    {
-        _legAnim.SetFloat("Speed", _rb.velocity.y);
-    }
-
 
 }
 

@@ -41,7 +41,7 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
 
     [SerializeField] PlayerInput _playerInput;
 
-    [SerializeField] private LineRenderer lr;
+    [SerializeField] private LineRenderer _lr;
 
     /// <summary>現在のワイヤーの長さ</summary>
     private float _wireLong = 25;
@@ -62,6 +62,11 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
     private SpringJoint _joint;
 
     private SwingHitUI _swingHitUISetting;
+
+
+    private bool _isLongWire;
+
+    public bool IsLongWire { get => _isLongWire; set => _isLongWire = value; }
 
 
     private WireLong _wireLongEnum;
@@ -142,31 +147,34 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
             }
         }
 
-        //上に
-        if (_playerInput.IsMouseScrol > 0)
+        if (_isLongWire)
         {
-            _wireLongsNum++;
-            if (_wireLongsNum == _wireLongs.Count)
+            //上に
+            if (_playerInput.IsMouseScrol > 0)
             {
-                _wireLongsNum = _wireLongs.Count - 1;
+                _wireLongsNum++;
+                if (_wireLongsNum == _wireLongs.Count)
+                {
+                    _wireLongsNum = _wireLongs.Count - 1;
+                }
+                _wireLong = _wireLongs[_wireLongsNum];
+
+                SetEnumWireLong(_wireLongsNum);
+
+                _nowWireLongText.text = _wireLong.ToString("00");
             }
-            _wireLong = _wireLongs[_wireLongsNum];
-
-            SetEnumWireLong(_wireLongsNum);
-
-            _nowWireLongText.text = _wireLong.ToString("00");
-        }
-        //下に
-        else if (_playerInput.IsMouseScrol < 0)
-        {
-            _wireLongsNum--;
-            if (_wireLongsNum < 0)
+            //下に
+            else if (_playerInput.IsMouseScrol < 0)
             {
-                _wireLongsNum = 0;
+                _wireLongsNum--;
+                if (_wireLongsNum < 0)
+                {
+                    _wireLongsNum = 0;
+                }
+                _wireLong = _wireLongs[_wireLongsNum];
+                SetEnumWireLong(_wireLongsNum);
+                _nowWireLongText.text = _wireLong.ToString("00");
             }
-            _wireLong = _wireLongs[_wireLongsNum];
-            SetEnumWireLong(_wireLongsNum);
-            _nowWireLongText.text = _wireLong.ToString("00");
         }
     }
 
@@ -318,10 +326,14 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
         //線を引く位置を決める
         //0は線を引く開始点
         //１は線を引く終了点
-        lr.positionCount = 2;
-        lr.SetPosition(0, _gunTip.position);
-        lr.SetPosition(1, _predictionHit.point);
+        _lr.positionCount = 2;
+        _lr.SetPosition(0, _gunTip.position);
+        _lr.SetPosition(1, _predictionHit.point);
     }
 
+    public void StopDrawRope()
+    {
+        _lr.positionCount = 0;
+    }
 
 }

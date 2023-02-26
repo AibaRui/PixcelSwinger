@@ -4,35 +4,23 @@ using UnityEngine;
 
 public class PlayerVelocityLimitControl : MonoBehaviour
 {
-    [Header("初心者_前後左右の移動速度の制限")]
-    [SerializeField] private float _limitSppedOfEazy = 30;
+    [Header("初心者_移動速度の制限")]
+    [SerializeField] private Vector2 _limitSppedOfEazy = new Vector2(30, 40);
 
-    [Header("初心者_上下の移動速度の制限")]
-    [Tooltip("初心者_上下の移動速度の制限")] [SerializeField] private float _limitSppedYOfEzay = 40;
+    [Header("初心者_移動速度の制限。ワイヤーが短いとき")]
+    [SerializeField] private Vector2 _limitSppedOfEazyOfWireShort = new Vector2(20, 30);
 
-    [Header("初心者_前後左右。ワイヤーのが短いとき")]
-    [SerializeField] private float _limitSppedOfEazyOfWireShort = 15;
+    [Header("中級_移動速度の制限")]
+    [SerializeField] private Vector2 _limitSppedOfNomal = new Vector2(60, 70);
 
-    [Header("初心者_上下。ワイヤーのが短いとき")]
-    [SerializeField] private float _limitSppedOfEazyYOfWireShort = 15;
+    [Header("中級_移動速度の制限。ワイヤーが短いとき")]
+    [SerializeField] private Vector2 _limitSppedOfNomalOfWireShort = new Vector2(40, 50);
 
-    [Header("中級_前後左右の移動速度の制限")]
-    [SerializeField] private float _limitSppedOfNomal = 25;
+    [Header("上級_移動速度の制限")]
+    [SerializeField] private Vector2 _limitSppedOfHard = new Vector2(100, 80);
 
-    [Header("中級_上下の移動速度の制限")]
-    [SerializeField] private float _limitSppedYOfNomal = 30;
-
-    [Header("中上_前後左右。ワイヤーのが短いとき")]
-    [SerializeField] private float _limitSppedOfNomalOfWireShort = 30;
-
-    [Header("中上_上下。ワイヤーのが短いとき")]
-    [SerializeField] private float _limitSppedOfNomalYOfWireShort = 30;
-
-    [Header("上級_前後左右の移動速度の制限")]
-    [SerializeField] private float _limitSppedOfHard = 35;
-
-    [Header("上級_上下の移動速度の制限")]
-    [SerializeField] private float _limitSppedYOfHard = 40;
+    [Header("上級_移動速度の制限。ワイヤーが短いとき")]
+    [SerializeField] private Vector2 _limitSppedHardOfWireShort = new Vector2(50, 60);
 
 
 
@@ -42,20 +30,7 @@ public class PlayerVelocityLimitControl : MonoBehaviour
 
     Rigidbody _rb;
 
-    [SerializeField] OperationsLevel _firstOperationLevl = OperationsLevel.Eazy;
 
-    public OperationsLevel FirstOperationLevel => _firstOperationLevl;
-
-    private OperationsLevel _operationLevl = OperationsLevel.Eazy;
-
-    public OperationsLevel OperationLevel { get => _operationLevl; set => _operationLevl = value; }
-
-    public enum OperationsLevel
-    {
-        Eazy,
-        Nomal,
-        Hard,
-    }
 
 
     void Start()
@@ -71,44 +46,44 @@ public class PlayerVelocityLimitControl : MonoBehaviour
         float limitSpeed = 0;
         float limitSpeedY = 0;
 
-        if (_operationLevl == OperationsLevel.Eazy)
+        if (_playerController.OperationLevel == PlayerController.OperationsLevel.Eazy)
         {
             if (_playerGrappleAndSwingSetting.WireLongEnum == PlayerGrappleAndSwingSetting.WireLong.Short)
             {
-                limitSpeed = _limitSppedOfEazyOfWireShort;
-                limitSpeedY = _limitSppedOfEazyYOfWireShort;
+                limitSpeed = _limitSppedOfEazyOfWireShort.x;
+                limitSpeedY = _limitSppedOfEazyOfWireShort.y;
             }
             else
             {
-                limitSpeed = _limitSppedOfEazy;
-                limitSpeedY = _limitSppedYOfEzay;
+                limitSpeed = _limitSppedOfEazy.x;
+                limitSpeedY = _limitSppedOfEazy.y;
             }
         }
-        else if (_operationLevl == OperationsLevel.Nomal)
+        else if (_playerController.OperationLevel == PlayerController.OperationsLevel.Nomal)
         {
             if (_playerGrappleAndSwingSetting.WireLongEnum == PlayerGrappleAndSwingSetting.WireLong.Short)
             {
-                limitSpeed = _limitSppedOfNomalOfWireShort;
-                limitSpeedY = _limitSppedOfNomalYOfWireShort;
+                limitSpeed = _limitSppedOfNomalOfWireShort.x;
+                limitSpeedY = _limitSppedOfNomalOfWireShort.y;
             }
             else
             {
-                limitSpeed = _limitSppedOfNomal;
-                limitSpeedY = _limitSppedYOfNomal;
+                limitSpeed = _limitSppedOfNomal.x;
+                limitSpeedY = _limitSppedOfNomal.y;
             }
         }
         else
         {
             if (_playerGrappleAndSwingSetting.WireLongEnum == PlayerGrappleAndSwingSetting.WireLong.Short)
             {
-                limitSpeed = _limitSppedOfNomalOfWireShort;
-                limitSpeedY = _limitSppedOfNomalYOfWireShort;
-                Debug.Log("aaa");
+                limitSpeed = _limitSppedHardOfWireShort.x;
+                limitSpeedY = _limitSppedHardOfWireShort.y;
+
             }
             else
             {
-                limitSpeed = _limitSppedOfHard;
-                limitSpeedY = _limitSppedYOfHard;
+                limitSpeed = _limitSppedOfHard.x;
+                limitSpeedY = _limitSppedOfHard.y;
             }
         }
 

@@ -10,34 +10,41 @@ public class PlayerSwing : MonoBehaviour
     [Header("アンカーの刺さった位置に引き寄せる速さ")]
     [SerializeField] float _swingBurst = 7;
 
-    public LineRenderer lr;
+    [Header("バネの強さ")]
+    [SerializeField] private float _springPower = 4.5f;
 
-    //  Vector3 currentGrapplePosition;
+    [Header("ダンパ-の強さ")]
+    [SerializeField] private float _damperPower = 7;
 
-    SpringJoint joint;
-
-    Rigidbody _rb;
+    [Header("ダンパ-の強さ")]
+    [SerializeField] private float _massScale = 4.5f;
 
 
     [SerializeField] PlayerController _playerController;
     [SerializeField] PlayerInput _playerInput;
 
-    [SerializeField] Animator _legAnim;
+    // [SerializeField] Animator _legAnim;
 
+    private SpringJoint _joint;
+    private Rigidbody _rb;
+
+
+
+
+    //  Vector3 currentGrapplePosition;
     private void Awake()
     {
 
     }
     void Start()
     {
-        lr = gameObject.GetComponent<LineRenderer>();
         _rb = GetComponent<Rigidbody>();
     }
 
     /// <summary>スウィング中の動き</summary>
     public void SwingingMove()
     {
-        if (joint != null)
+        if (_joint != null)
         {
             Vector3 dir = Vector3.forward * _playerInput.VerticalInput + Vector3.right * _playerInput.HorizontalInput;
             Vector3 swingPoint = _playerController.PlayerSwingAndGrappleSetting.PredictionHit.point;
@@ -65,7 +72,7 @@ public class PlayerSwing : MonoBehaviour
             float distanceFromPoint = Vector3.Distance(transform.position, swingPoint);
 
 
-            if(Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKey(KeyCode.LeftShift))
             {
                 Vector3 dirs = Camera.main.transform.forward;
                 _rb.AddForce(dirs.normalized * 10);
@@ -74,14 +81,14 @@ public class PlayerSwing : MonoBehaviour
 
             if (Input.GetKey(KeyCode.Space))
             {
-                joint.maxDistance = distanceFromPoint * 0.5f;
-                joint.minDistance = distanceFromPoint * 0.1f;
+                _joint.maxDistance = distanceFromPoint * 0.5f;
+                _joint.minDistance = distanceFromPoint * 0.1f;
                 _rb.AddForce(directionToPoint.normalized * _swingBurst * 2);
             }
             else
             {
-                joint.maxDistance = distanceFromPoint * 0.8f;
-                joint.minDistance = distanceFromPoint * 0.25f;
+                _joint.maxDistance = distanceFromPoint * 0.8f;
+                _joint.minDistance = distanceFromPoint * 0.25f;
                 _rb.AddForce(directionToPoint.normalized * _swingBurst);
             }
 
@@ -91,19 +98,19 @@ public class PlayerSwing : MonoBehaviour
     public void StartSwing()
     {
         RaycastHit predictionHit = _playerController.PlayerSwingAndGrappleSetting.PredictionHit;
-        //swingJointPoint = _playerController.PlayerSwingAndGrappleSetting.PredictionHit.point;
+
         //空ぶったら何もしない
         if (predictionHit.point == Vector3.zero)
         {
             return;
         }
 
-        _playerController.PlayerSwingAndGrappleSetting.Joint = joint;
+        //swing/grappleの設定クラスに自身のjointを渡す
+        _joint = gameObject.AddComponent<SpringJoint>();
+        _playerController.PlayerSwingAndGrappleSetting.Joint = _joint;
 
         //アンカーの着地点。
         Vector3 swingPoint = predictionHit.point;
-
-        joint = gameObject.AddComponent<SpringJoint>();
 
         //Anchor(jointをつけているオブジェクトのローカル座標  ////例)自分についてる命綱の位置)
         //connectedAnchor(アンカーのついてる点のワールド座標　////例)アンカーの先。バンジージャンプの橋の、支えているところ)
@@ -111,29 +118,25 @@ public class PlayerSwing : MonoBehaviour
         //autoConfigureConnectedAnchorはジョイントをつけた時はOnになっており、AnchorとconnectedAnchor(アンカーの接地点)が同じ
         //つまり自分の居る位置にアンカーを刺してそこでぶら下がっている状態。なのでオフにする
 
-        joint.autoConfigureConnectedAnchor = false;
-        joint.connectedAnchor = swingPoint;
+        _joint.autoConfigureConnectedAnchor = false;
+        _joint.connectedAnchor = swingPoint;
 
-
+        //自分とアンカーの位置の間(ジョイント)の長さ。
         float distanceFromPoint = Vector3.Distance(transform.position, swingPoint);
-
 
         //ジョイントの長さを変更(*1だとアンカーを指しても長さが縮まらないため、すぐに浮かない)
         //強制的に短くする事で引っ張られる事になる
-        joint.maxDistance = distanceFromPoint * 0.8f;
-        joint.minDistance = distanceFromPoint * 0.25f;
+        _joint.maxDistance = distanceFromPoint * 0.8f;
+        _joint.minDistance = distanceFromPoint * 0.25f;
 
-        //ばねの強さ
-        joint.spring = 4.5f;
+        //ばねの強さ(のび縮みのしやすさ)
+        _joint.spring = _springPower;
 
         //(springの減る量)バネがビヨーンと伸びるのを繰り返してから動かなくなるまでの時間。値が多いほど短くなる
-        joint.damper = 7f;
+        _joint.damper = _damperPower;
 
-        joint.massScale = 4.5f;
-
-
-
-        lr.positionCount = 2;
+        //質量
+        _joint.massScale = _massScale;
 
         //_tipPos = _playerController.PlayerSwingAndGrappleSetting.PredictionHit.point;
         //current(意味:現在)
@@ -144,29 +147,27 @@ public class PlayerSwing : MonoBehaviour
     /// <summary>スウィング中止</summary>
     public void StopSwing()
     {
-        lr.positionCount = 0;
         _playerController.PlayerSwingAndGrappleSetting.Joint = null;
 
-        _legAnim.SetBool("Swing", false);
-        Destroy(joint);
+        //legAnim.SetBool("Swing", false);
+        Destroy(_joint);
     }
 
     public void LegAnimation()
     {
-        _legAnim.SetFloat("Speed", _rb.velocity.y);
+        // _legAnim.SetFloat("Speed", _rb.velocity.y);
+        // _legAnim.SetBool("Swing", true);
 
-        _legAnim.SetBool("Swing", true);
-
-        if (transform.position.x > _playerController.PlayerSwingAndGrappleSetting.PredictionHit.point.x)
-        {
-            _legAnim.SetBool("IsLeft", true);
-            _legAnim.SetBool("IsRight", false);
-        }
-        else
-        {
-            _legAnim.SetBool("IsRight", true);
-            _legAnim.SetBool("IsLeft", false);
-        }
+        //if (transform.position.x > _playerController.PlayerSwingAndGrappleSetting.PredictionHit.point.x)
+        //{
+        //    _legAnim.SetBool("IsLeft", true);
+        //    _legAnim.SetBool("IsRight", false);
+        //}
+        //else
+        //{
+        //    _legAnim.SetBool("IsRight", true);
+        //    _legAnim.SetBool("IsLeft", false);
+        //}
 
     }
 

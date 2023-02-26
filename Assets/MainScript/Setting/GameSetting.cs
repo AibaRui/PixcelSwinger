@@ -19,6 +19,7 @@ public class GameSetting : MonoBehaviour
     [SerializeField] private PlayerMoveing _playerMoveing;
     [SerializeField] private UIShowSystem _uIShowSystem;
     [SerializeField] private PlayerVelocityLimitControl _playerVelocityLimitControl;
+    [SerializeField] private PlayerController _playerController;
 
     //tmp～。設定画面で変更した結果の値を保存しておく用の値
 
@@ -72,7 +73,7 @@ public class GameSetting : MonoBehaviour
         _tmpSwingHitUI = _gameSettingSaveManager.SaveData._showSwingUI;
 
         //操作レベルを設定、tmp用の値を現在の値に更新
-        _playerVelocityLimitControl.OperationLevel = (PlayerVelocityLimitControl.OperationsLevel)Enum.ToObject(typeof(PlayerVelocityLimitControl.OperationsLevel), _gameSettingSaveManager.SaveData._isOperationLevel);
+        _playerController.OperationLevel = (PlayerController.OperationsLevel)Enum.ToObject(typeof(PlayerController.OperationsLevel), _gameSettingSaveManager.SaveData._isOperationLevel);
         _tmpOperationLevel = _gameSettingSaveManager.SaveData._isOperationLevel;
     }
 
@@ -96,8 +97,8 @@ public class GameSetting : MonoBehaviour
 
         //操作レベル
         //tmpをint型からenum型に変換して変更。操作レベルを更新して、再びintが型に変換し保存
-        _playerVelocityLimitControl.OperationLevel = (PlayerVelocityLimitControl.OperationsLevel)Enum.ToObject(typeof(PlayerVelocityLimitControl.OperationsLevel), _tmpOperationLevel);
-        var numberOfOperationLevel = (int)_playerVelocityLimitControl.OperationLevel;
+        _playerController.OperationLevel = (PlayerController.OperationsLevel)Enum.ToObject(typeof(PlayerController.OperationsLevel), _tmpOperationLevel);
+        var numberOfOperationLevel = (int)_playerController.OperationLevel;
 
 
         //セーブする
@@ -113,7 +114,7 @@ public class GameSetting : MonoBehaviour
         //Swingのenumをintとして変換
         int nowSwingHitUI = (int)_playerGrappleAndSwingSetting.SwingHitUISetting;
         //操作レベルのenumをintとして変換
-        int nowOperationLevel = (int)_playerVelocityLimitControl.OperationLevel;
+        int nowOperationLevel = (int)_playerController.OperationLevel;
 
         if (_mouseSensitivitySetting.MouseSensivitySlider.value != _mouseSensitivitySetting.NowSensivity || _playerMoveing.IsPushChange != _tmpRunSettingIsPushChange ||
             nowSwingHitUI != _tmpSwingHitUI || _uIShowSystem.IsShowUI != _tmpIsShowAsistUI || nowOperationLevel != _tmpOperationLevel)
@@ -143,7 +144,7 @@ public class GameSetting : MonoBehaviour
         _tmpSwingHitUI = (int)_playerGrappleAndSwingSetting.SwingHitUISetting;
 
         //操作レベル
-        _tmpOperationLevel = (int)_playerVelocityLimitControl.OperationLevel;
+        _tmpOperationLevel = (int)_playerController.OperationLevel;
     }
 
 
@@ -167,8 +168,8 @@ public class GameSetting : MonoBehaviour
         _tmpSwingHitUI = (int)_playerGrappleAndSwingSetting.SwingHitUISetting;
 
         //操作レベル
-        _playerVelocityLimitControl.OperationLevel = _playerVelocityLimitControl.FirstOperationLevel;
-        _tmpOperationLevel = (int)_playerVelocityLimitControl.OperationLevel;
+        _playerController.OperationLevel = _playerController.FirstOperationLevel;
+        _tmpOperationLevel = (int)_playerController.OperationLevel;
 
         //初回のセットで無かったらセーブする
         if (!isFirstSet)
