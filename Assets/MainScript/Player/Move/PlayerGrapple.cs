@@ -57,11 +57,9 @@ public class PlayerGrapple : MonoBehaviour
             }
 
 
-
-
             float distanceFromPoint = Vector3.Distance(transform.position, swingPoint);
 
-            if (distanceFromPoint < _stopPullPos)
+            if (distanceFromPoint > _stopPullPos)
             {
                 _joint.maxDistance = distanceFromPoint * 0.8f;
                 _joint.minDistance = distanceFromPoint * 0.25f;

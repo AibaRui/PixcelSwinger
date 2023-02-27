@@ -56,20 +56,21 @@ public class WallCheck : MonoBehaviour
     [SerializeField] LayerMask _wallLayer;
 
     /// <summary>右の壁に当たっているかどうか</summary>
-    bool _rightWallHit = false;
+    private bool _rightWallHit = false;
     /// <summary>右の壁に当たっているかどうか</summary>
-    bool _leftWallHit = false;
-    RaycastHit m_rightWall;
-    RaycastHit m_leftWall;
+    private bool _leftWallHit = false;
+
+
+    private RaycastHit _rightWall;
+    private RaycastHit _leftWall;
 
     /// <summary>壁RUN中</summary>
-    bool _isWallRun;
+    private bool _isWallRun;
     /// <summary>壁RUNができるかどうか</summary>
-    bool _okWallRun = true;
+    private bool _okWallRun = true;
 
     /// <summary>壁RUNの進む方向</summary>
     Vector3 wallForward;
-
 
     Vector3 jumpFowrd;
 
@@ -82,7 +83,7 @@ public class WallCheck : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(transform.position + transform.forward + _posAddFowardMidle, 
+        Gizmos.DrawWireCube(transform.position + transform.forward + _posAddFowardMidle,
             new Vector3(_boxCastFowardMidleX, _boxCastFowardMidleY, _boxCastFowardMidleZ));
 
         //正面上のRay
@@ -144,7 +145,7 @@ public class WallCheck : MonoBehaviour
 
 
 
-        if ((!upWallMidle && !upWallLeft && ! upWallRight) &&( _fowardWall || _downWall))
+        if ((!upWallMidle && !upWallLeft && !upWallRight) && (_fowardWall || _downWall))
         {
             _isClimb = true;
         }
@@ -155,12 +156,35 @@ public class WallCheck : MonoBehaviour
     }
 
 
+    public bool WallRunFowrdWallCheck()
+    {
 
+
+        if (_leftWall.collider != null)
+        {
+            Vector3 _wallForward = Vector3.Cross(_leftWall.normal, transform.up);
+
+            //外積ベクトルがマイナスだった場合、向きを変える。
+            if ((transform.forward - _wallForward).magnitude > (transform.forward - -_wallForward).magnitude)
+            {
+                _wallForward = -_wallForward;
+            }
+
+        }
+        else
+        {
+            Vector3 _wallForward = Vector3.Cross(_leftWall.normal, transform.up);
+
+
+        }
+
+        return false;
+    }
 
     /// <summary>壁に近いかどうかを判断する</summary>
     public bool CheckWallLeft()
     {
-        _leftWallHit = Physics.Raycast(transform.position, -transform.right, out m_leftWall, _checkWallRayDistace, _wallLayer);
+        _leftWallHit = Physics.Raycast(transform.position, -transform.right, out _leftWall, _checkWallRayDistace, _wallLayer);
         return _leftWallHit;
     }
 
@@ -168,7 +192,7 @@ public class WallCheck : MonoBehaviour
     /// <summary>壁に近いかどうかを判断する</summary>
     public bool CheckWallRight()
     {
-        _rightWallHit = Physics.Raycast(transform.position, transform.right, out m_rightWall, _checkWallRayDistace, _wallLayer);
+        _rightWallHit = Physics.Raycast(transform.position, transform.right, out _rightWall, _checkWallRayDistace, _wallLayer);
         return _rightWallHit;
     }
 

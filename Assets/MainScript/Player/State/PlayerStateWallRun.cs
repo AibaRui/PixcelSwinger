@@ -46,6 +46,12 @@ public class PlayerStateWallRun : PlayerStateBase
             return;
         }
 
+        if(_stateMachine.PlayerController.PlayerWallRunning.CheckForwardWall())
+        {
+            _stateMachine.PlayerController.PlayerWallRunning.WallRunJump();
+            _stateMachine.TransitionTo(_stateMachine.StateUpAir);
+            return;
+        }
 
 
         //ï«Ç…ìñÇΩÇÁÇ»Ç≠Ç»Ç¡ÇΩèÍçá

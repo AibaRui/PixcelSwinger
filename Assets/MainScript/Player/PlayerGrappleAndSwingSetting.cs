@@ -306,12 +306,17 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
     }
 
 
-    /// <summary>[Hit!]のUIを非表示にする</summary>
-    public void AnAtivePointer()
+    /// <summary>Siwng終わりに呼ぶ</summary>
+    public void EndGrappleOrSwing()
     {
+        //[Hit!]のUIを非表示にする
         _isEndHitPoinAnim = false;
         _countTime = 0;
         _hitPointer.SetActive(false);
+
+        //JointとLineRendrerを消す
+        _joint = null;
+        _lr.positionCount = 0;
     }
 
     /// <summary>Swing時のワイヤーを描く</summary>
@@ -330,10 +335,4 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
         _lr.SetPosition(0, _gunTip.position);
         _lr.SetPosition(1, _predictionHit.point);
     }
-
-    public void StopDrawRope()
-    {
-        _lr.positionCount = 0;
-    }
-
 }

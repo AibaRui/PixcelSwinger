@@ -34,6 +34,10 @@ public class PlayerMoveing : MonoBehaviour
     [Header("最初の設定")]
     [SerializeField] private bool _isFirstPushChange = true;
 
+
+    [Header("銃")]
+    [SerializeField] private Animator _anim;
+
     [SerializeField] PlayerController _playerController;
     [SerializeField] PlayerInput _playerInput;
     [SerializeField] PlayerVelocityLimitControl _playerVelocityLimitControl;
@@ -174,6 +178,11 @@ public class PlayerMoveing : MonoBehaviour
         // 水平方向の速度を Speed にセットする
         //Vector3 velocity = _rb.velocity;
         // velocity.y = 0f;
+
+        if (_rb.velocity.x != 0 || _rb.velocity.z != 0)
+        {
+            _anim.SetFloat("Speed", _moveSpeed);
+        }
 
     }
 

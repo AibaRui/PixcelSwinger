@@ -18,20 +18,27 @@ public class PlayerStateOpenInventory : PlayerStateBase
 
     public override void FixedUpdate()
     {
-       
+
     }
 
     public override void LateUpdate()
     {
-       
+
     }
 
     public override void Update()
     {
-       if(_stateMachine.PlayerController.PlayerInput.IsTabDown)
+        if (_stateMachine.PlayerController.PlayerInput.IsTabDown)
         {
-            _stateMachine.TransitionTo(_stateMachine.StateIdle);
-            Debug.Log("Inventory=>Idle");
+            if (_stateMachine.PlayerController.GameSetting.CheckChange())
+            {
+
+            }
+            else
+            {
+                _stateMachine.TransitionTo(_stateMachine.StateIdle);
+                Debug.Log("Inventory=>Idle");
+            }
         }
 
     }

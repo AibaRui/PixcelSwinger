@@ -17,8 +17,7 @@ public class PlayerStateSwing : PlayerStateBase
     public override void Exit()
     {
         _stateMachine.PlayerController.PlayerSwing.StopSwing();
-        _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.Joint = null;
-        _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.AnAtivePointer();
+        _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.EndGrappleOrSwing();
     }
 
     public override void FixedUpdate()
