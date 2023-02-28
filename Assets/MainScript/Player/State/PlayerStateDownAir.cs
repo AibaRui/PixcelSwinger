@@ -57,6 +57,8 @@ public class PlayerStateDownAir : PlayerStateBase
 
 
 
+
+
         //段差登りの壁チェック
         _stateMachine.PlayerController.WallCheck.CheckClimbWall();
 

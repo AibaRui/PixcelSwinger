@@ -61,14 +61,10 @@ public class PlayerController : MonoBehaviour,ISave
     private InventoryManager _inventoryManager;
 
     [SerializeField]
-    private UIShowSystem _uiShowSystem;
-
-    [SerializeField]
     private GameSetting _gameSetting;
 
     [SerializeField] private PlayerPositionSaveManager _playerPositionSaveManager;
 
-    public UIShowSystem UIShowSystem => _uiShowSystem;
 
     public GameSetting GameSetting => _gameSetting;
 

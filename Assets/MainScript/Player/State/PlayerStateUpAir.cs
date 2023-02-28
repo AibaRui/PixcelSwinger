@@ -59,6 +59,7 @@ public class PlayerStateUpAir : PlayerStateBase
             }//Grappleに移行
         }
 
+
         //段差登りの壁チェック
         _stateMachine.PlayerController.WallCheck.CheckClimbWall();
 

@@ -23,14 +23,32 @@ public class UIShowSystem : MonoBehaviour
     private bool _isShowUI = true;
     private float _countTime;
 
+    [SerializeField] private Rigidbody _playerigidBody;
     public bool FirstIsShowUI => _firstIsShowUI;
 
     public bool IsShowUI { get => _isShowUI; set => _isShowUI = value; }
 
+
+
+    private void Update()
+    {
+        if (_playerigidBody.velocity != Vector3.zero)
+        {
+            ShowUI();
+        }
+        else
+        {
+            if (_countTime == 0)
+            {
+                CloseUI();
+            }
+        }
+    }
+
     /// <summary>現在有効にしている設定のボタンの下のバーを設定する</summary>
     public void SettingPanelButtunBarSetting()
     {
-        if(_isShowUI)
+        if (_isShowUI)
         {
             _isShowButtunSetBar.SetActive(true);
             _isAnShowButtunSetBar.SetActive(false);

@@ -29,23 +29,22 @@ public class MouseSensitivity : MonoBehaviour
 
     public float NowSensivity => _nowSensivity;
 
-    private void Awake()
+    public void FirstSetting()
     {
+        _camera = _ca.GetCinemachineComponent<CinemachinePOV>();
         _mouseSensivitySlider.maxValue = _maxMouseSensivity;
         _mouseSensivitySlider.minValue = _minSensitivity;
     }
 
     public void ChangeSensitivity(float value)
     {
-        if (_camera == null)
-        {
-            _camera = _ca.GetCinemachineComponent<CinemachinePOV>();
-        }
-
         _camera.m_HorizontalAxis.m_MaxSpeed = value;
         _camera.m_VerticalAxis.m_MaxSpeed = value;
 
         _mouseSensivitySlider.value = value;
         _nowSensivity = value;
+
+        Debug.Log("—^‚¦‚ç‚ê"+value);
+        Debug.Log("suaiad" + _mouseSensivitySlider.value);
     }
 }

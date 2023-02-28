@@ -74,7 +74,8 @@ public class PlayerWallRunning : MonoBehaviour
 
     public Vector3 WallForward => _wallForward;
 
-    [SerializeField] Animator _anim;
+    [Header("e‚ÌAnimation")]
+    [SerializeField] Animator _gunAnim;
     [SerializeField] AudioSource _aud;
     private Rigidbody _rb;
     void Start()
@@ -99,13 +100,13 @@ public class PlayerWallRunning : MonoBehaviour
         //•ûŒü‚É‰‚¶‚½e‚ÌAnimation‚ğ‚³‚¹‚é
         if (_startHitRight)
         {
-            _anim.Play("GunWallRunStart_R");
+            _gunAnim.Play("GunWallRunStart_R");
         }
         else
         {
-            _anim.Play("GunWallRunStart_L");
+            _gunAnim.Play("GunWallRunStart_L");
         }
-        _anim.SetBool("IsWallRun", true);
+        _gunAnim.SetBool("IsWallRun", true);
     }
 
     /// <summary>WallRun‚ÉAƒJƒƒ‰‚ğŒX‚©‚¹‚éŠÖ”</summary>
@@ -258,7 +259,7 @@ public class PlayerWallRunning : MonoBehaviour
     {
         _playerPOVCamera.m_Lens.Dutch = 0;
         _rb.useGravity = true;
-        _anim.SetBool("IsWallRun", false);
+        _gunAnim.SetBool("IsWallRun", false);
         _isChangeCamera = false;
         _isCoolTime = false;
         StartCoroutine(WallRunCoolTime());

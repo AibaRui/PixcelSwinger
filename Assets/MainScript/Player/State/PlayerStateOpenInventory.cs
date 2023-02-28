@@ -30,9 +30,11 @@ public class PlayerStateOpenInventory : PlayerStateBase
     {
         if (_stateMachine.PlayerController.PlayerInput.IsTabDown)
         {
-            if (_stateMachine.PlayerController.GameSetting.CheckChange())
-            {
+            _stateMachine.PlayerController.GameSetting.CheckChange();
 
+            if (_stateMachine.PlayerController.GameSetting.IsChangeSetting)
+            {
+                Debug.Log("a");
             }
             else
             {

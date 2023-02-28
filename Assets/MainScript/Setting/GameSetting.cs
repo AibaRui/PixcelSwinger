@@ -23,7 +23,7 @@ public class GameSetting : MonoBehaviour
     [SerializeField] private List<GameObject> _operationLevelsBars = new List<GameObject>();
 
 
-
+    [SerializeField] private MouseSensitivity _mouseSensitivity;
     [SerializeField] private GameSettingSaveManager _gameSettingSaveManager;
     [SerializeField] private MouseSensitivity _mouseSensitivitySetting;
     [SerializeField] private PlayerGrappleAndSwingSetting _playerGrappleAndSwingSetting;
@@ -49,6 +49,8 @@ public class GameSetting : MonoBehaviour
 
     private void Awake()
     {
+        _mouseSensitivity.FirstSetting();
+
         _gameSettingSaveManager.FirstLode();
 
         if (_gameSettingSaveManager.SaveData == null)
@@ -78,27 +80,21 @@ public class GameSetting : MonoBehaviour
 
         //アシストUI
         _uIShowSystem.IsShowUI = _gameSettingSaveManager.SaveData._isShowAsistUI;
-        _uIShowSystem.SettingPanelButtunBarSetting();
 
         //Run設定
         _playerMoveing.IsPushChange = _gameSettingSaveManager.SaveData._runSettingIsPushChange;
         _tmpRunSettingIsPushChange = _gameSettingSaveManager.SaveData._runSettingIsPushChange;
-        _runButtunPushChangeBar.SetActive(_playerMoveing.IsPushChange);
-        _runButtunPushingBar.SetActive(!_playerMoveing.IsPushChange);
-
 
         //SwingのUI設定
         _playerGrappleAndSwingSetting.SwingHitUISetting = (PlayerGrappleAndSwingSetting.SwingHitUI)Enum.ToObject(typeof(PlayerGrappleAndSwingSetting.SwingHitUI), _gameSettingSaveManager.SaveData._showSwingUI);
         _tmpSwingHitUI = _gameSettingSaveManager.SaveData._showSwingUI;
-        _swingBars.ForEach(i => i.SetActive(false));
-        _swingBars[_tmpSwingHitUI].SetActive(true);
 
 
         //操作レベルを設定、tmp用の値を現在の値に更新
         _playerController.OperationLevel = (PlayerController.OperationsLevel)Enum.ToObject(typeof(PlayerController.OperationsLevel), _gameSettingSaveManager.SaveData._isOperationLevel);
         _tmpOperationLevel = _gameSettingSaveManager.SaveData._isOperationLevel;
-        _operationLevelsBars.ForEach(i => i.SetActive(false));
-        _operationLevelsBars[_tmpOperationLevel].SetActive(true);
+
+        ChangeButtunSelectedBar();
     }
 
     /// <summary>設定画面で変更した内容を適用する</summary>
@@ -110,27 +106,21 @@ public class GameSetting : MonoBehaviour
 
         //アシストUI
         _uIShowSystem.IsShowUI = _tmpIsShowAsistUI;
-        _uIShowSystem.SettingPanelButtunBarSetting();
 
         //Run設定
         _playerMoveing.ChangeRunWay(_tmpRunSettingIsPushChange);
-        _runButtunPushChangeBar.SetActive(_playerMoveing.IsPushChange);
-        _runButtunPushingBar.SetActive(!_playerMoveing.IsPushChange);
-
 
         //SwingのUI設定
         //enumをint型に変換して保存
         _playerGrappleAndSwingSetting.SwingHitUISetting = (PlayerGrappleAndSwingSetting.SwingHitUI)Enum.ToObject(typeof(PlayerGrappleAndSwingSetting.SwingHitUI), _tmpSwingHitUI);
         var numberOfSwingHItUI = (int)_playerGrappleAndSwingSetting.SwingHitUISetting;
-        _swingBars.ForEach(i => i.SetActive(false));
-        _swingBars[_tmpSwingHitUI].SetActive(true);
 
         //操作レベル
         //tmpをint型からenum型に変換して変更。操作レベルを更新して、再びintが型に変換し保存
         _playerController.OperationLevel = (PlayerController.OperationsLevel)Enum.ToObject(typeof(PlayerController.OperationsLevel), _tmpOperationLevel);
         var numberOfOperationLevel = (int)_playerController.OperationLevel;
-        _operationLevelsBars.ForEach(i => i.SetActive(false));
-        _operationLevelsBars[_tmpOperationLevel].SetActive(true);
+
+        ChangeButtunSelectedBar();
 
         //セーブする
         _gameSettingSaveManager.Save(_mouseSensitivitySetting.NowSensivity, _playerMoveing.IsPushChange, numberOfSwingHItUI, true, _uIShowSystem.IsShowUI, numberOfOperationLevel);
@@ -140,7 +130,7 @@ public class GameSetting : MonoBehaviour
     /// 設定の変更が適用されているかどうか確認する関数
     /// tmpの値と、各設定の現在の値を比べて、違いがあるかを確認する
     /// </summary>
-    public bool CheckChange()
+    public void CheckChange()
     {
         //Swingのenumをintとして変換
         int nowSwingHitUI = (int)_playerGrappleAndSwingSetting.SwingHitUISetting;
@@ -152,14 +142,17 @@ public class GameSetting : MonoBehaviour
         {
             _isChangeSetting = true;
             _warningPanel.SetActive(true);
-            return true;
         }
         else
         {
             _settingPanel.SetActive(false);
-            return false;
         }
     }
+
+
+
+
+
 
     /// <summary>設定の変更内容を適用しなかった時に呼ぶ関数</summary>
     /// tmpの値を変更前に戻す。
@@ -169,6 +162,7 @@ public class GameSetting : MonoBehaviour
 
         //マウス感度
         _mouseSensitivitySetting.ChangeSensitivity(_mouseSensitivitySetting.NowSensivity);
+        _uIShowSystem.SettingPanelButtunBarSetting();
 
         //アシストUI
         _tmpIsShowAsistUI = _uIShowSystem.IsShowUI;
@@ -181,6 +175,8 @@ public class GameSetting : MonoBehaviour
 
         //操作レベル
         _tmpOperationLevel = (int)_playerController.OperationLevel;
+
+        ChangeButtunSelectedBar();
     }
 
 
@@ -194,26 +190,23 @@ public class GameSetting : MonoBehaviour
         //アシストUI
         _uIShowSystem.IsShowUI = _uIShowSystem.FirstIsShowUI;
         _tmpIsShowAsistUI = _uIShowSystem.IsShowUI;
-        _uIShowSystem.SettingPanelButtunBarSetting();
 
         //Run設定
         _playerMoveing.ChangeRunWay(_playerMoveing.IsFirstPushChange);
         _tmpRunSettingIsPushChange = _playerMoveing.IsPushChange;
-        _runButtunPushChangeBar.SetActive(_playerMoveing.IsPushChange);
-        _runButtunPushingBar.SetActive(!_playerMoveing.IsPushChange);
 
 
         //SwingのUI表示の設定
         _playerGrappleAndSwingSetting.SwingHitUISetting = _playerGrappleAndSwingSetting.FirstSwingHitUISetting;
         _tmpSwingHitUI = (int)_playerGrappleAndSwingSetting.SwingHitUISetting;
-        _swingBars.ForEach(i => i.SetActive(false));
-        _swingBars[_tmpSwingHitUI].SetActive(true);
+
 
         //操作レベル
         _playerController.OperationLevel = _playerController.FirstOperationLevel;
         _tmpOperationLevel = (int)_playerController.OperationLevel;
-        _operationLevelsBars.ForEach(i => i.SetActive(false));
-        _operationLevelsBars[_tmpOperationLevel].SetActive(true);
+
+
+        ChangeButtunSelectedBar();
 
         //初回のセットで無かったらセーブする
         if (!isFirstSet)
@@ -223,6 +216,19 @@ public class GameSetting : MonoBehaviour
     }
 
 
+    private void ChangeButtunSelectedBar()
+    {
+        _uIShowSystem.SettingPanelButtunBarSetting();
+
+        _runButtunPushChangeBar.SetActive(_playerMoveing.IsPushChange);
+        _runButtunPushingBar.SetActive(!_playerMoveing.IsPushChange);
+
+        _swingBars.ForEach(i => i.SetActive(false));
+        _swingBars[_tmpSwingHitUI].SetActive(true);
+
+        _operationLevelsBars.ForEach(i => i.SetActive(false));
+        _operationLevelsBars[_tmpOperationLevel].SetActive(true);
+    }
 
 
     /// <summary>ボタンから呼ぶ。走りの方法を変える</summary>

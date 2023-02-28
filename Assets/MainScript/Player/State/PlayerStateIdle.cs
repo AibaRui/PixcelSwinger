@@ -12,8 +12,7 @@ public class PlayerStateIdle : PlayerStateBase
 
     public override void Exit()
     {
-        //一定時間経過したら、アシストUIを出す仕組みを閉じる
-        _stateMachine.PlayerController.UIShowSystem.CloseUI();
+
     }
     public override void LateUpdate()
     {
@@ -33,8 +32,6 @@ public class PlayerStateIdle : PlayerStateBase
         //走り、歩き、の切り替え
         _stateMachine.PlayerController.PlayerMoveing.SpeedChange();
 
-        //一定時間経過したら、アシストUIを出す仕組み
-        _stateMachine.PlayerController.UIShowSystem.ShowUI();
 
         //インベントリを開く
         if (_stateMachine.PlayerController.PlayerInput.IsTabDown)
