@@ -32,13 +32,13 @@ public class UIShowSystem : MonoBehaviour
 
     private void Update()
     {
-        if (_playerigidBody.velocity != Vector3.zero)
+        if (_playerigidBody.velocity == Vector3.zero)
         {
             ShowUI();
         }
         else
         {
-            if (_countTime == 0)
+            if (_countTime != 0)
             {
                 CloseUI();
             }

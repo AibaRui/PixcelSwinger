@@ -80,6 +80,7 @@ public class GameSetting : MonoBehaviour
 
         //アシストUI
         _uIShowSystem.IsShowUI = _gameSettingSaveManager.SaveData._isShowAsistUI;
+        _tmpIsShowAsistUI = _gameSettingSaveManager.SaveData._isShowAsistUI;
 
         //Run設定
         _playerMoveing.IsPushChange = _gameSettingSaveManager.SaveData._runSettingIsPushChange;
@@ -137,11 +138,43 @@ public class GameSetting : MonoBehaviour
         //操作レベルのenumをintとして変換
         int nowOperationLevel = (int)_playerController.OperationLevel;
 
-        if (_mouseSensitivitySetting.MouseSensivitySlider.value != _mouseSensitivitySetting.NowSensivity || _playerMoveing.IsPushChange != _tmpRunSettingIsPushChange ||
-            nowSwingHitUI != _tmpSwingHitUI || _uIShowSystem.IsShowUI != _tmpIsShowAsistUI || nowOperationLevel != _tmpOperationLevel)
+
+        //if (_mouseSensitivitySetting.MouseSensivitySlider.value != _mouseSensitivitySetting.NowSensivity || _playerMoveing.IsPushChange != _tmpRunSettingIsPushChange ||
+        //    nowSwingHitUI != _tmpSwingHitUI || _uIShowSystem.IsShowUI != _tmpIsShowAsistUI || nowOperationLevel != _tmpOperationLevel)
+        //{
+        //    _isChangeSetting = true;
+        //    _warningPanel.SetActive(true);
+        //}
+
+        if (_mouseSensitivitySetting.MouseSensivitySlider.value != _mouseSensitivitySetting.NowSensivity)
         {
             _isChangeSetting = true;
             _warningPanel.SetActive(true);
+            Debug.Log("マウス感度の設定が違う");
+        }
+        else if (_playerMoveing.IsPushChange != _tmpRunSettingIsPushChange)
+        {
+            _isChangeSetting = true;
+            _warningPanel.SetActive(true);
+            Debug.Log("Run設定が違う");
+        }
+        else if (nowSwingHitUI != _tmpSwingHitUI)
+        {
+            _isChangeSetting = true;
+            _warningPanel.SetActive(true);
+            Debug.Log("Swing設定が違う");
+        }
+        else if (_uIShowSystem.IsShowUI != _tmpIsShowAsistUI)
+        {
+            _isChangeSetting = true;
+            _warningPanel.SetActive(true);
+            Debug.Log("UIの設定が違う");
+        }
+        else if (nowOperationLevel != _tmpOperationLevel)
+        {
+            _isChangeSetting = true;
+            _warningPanel.SetActive(true);
+            Debug.Log("操作の設定が違う");
         }
         else
         {
