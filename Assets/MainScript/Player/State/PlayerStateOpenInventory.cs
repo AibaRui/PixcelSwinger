@@ -9,6 +9,8 @@ public class PlayerStateOpenInventory : PlayerStateBase
     {
         _stateMachine.PlayerController.Rb.velocity = Vector3.zero;
         _stateMachine.PlayerController.InventoryManager.InventoryOpen();
+
+        _stateMachine.PlayerController.AudioManager.OpenInvrntory();
     }
 
     public override void Exit()
@@ -34,7 +36,6 @@ public class PlayerStateOpenInventory : PlayerStateBase
 
             if (_stateMachine.PlayerController.GameSetting.IsChangeSetting)
             {
-                Debug.Log("a");
             }
             else
             {

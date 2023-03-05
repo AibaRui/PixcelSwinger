@@ -17,6 +17,9 @@ public class PlayerWallRunning : MonoBehaviour
     [Header("壁のレイヤー")]
     [SerializeField] private LayerMask _wallLayer;
 
+    [Header("強制終了させるレイヤー")]
+    [SerializeField] private LayerMask _wallRunStopLayer;
+
     [Header("カメラを傾かせる最大角度")]
     [SerializeField] private float _cameraDutch = 5;
 
@@ -35,6 +38,10 @@ public class PlayerWallRunning : MonoBehaviour
     [Header("正面の壁の判定の長さ")]
     [SerializeField] private float _layLongOfCheckForwardWallOfEndWallRun = 5;
 
+    [Header("壁走りの足音")]
+    [SerializeField] private AudioClip _wallRunSound;
+
+    [SerializeField] private PlayerController _playerController;
 
     /// <summary>壁RUNの進む方向</summary>
     private Vector3 _wallForward;
@@ -76,7 +83,7 @@ public class PlayerWallRunning : MonoBehaviour
 
     [Header("銃のAnimation")]
     [SerializeField] Animator _gunAnim;
-    [SerializeField] AudioSource _aud;
+
     private Rigidbody _rb;
     void Start()
     {
@@ -153,7 +160,7 @@ public class PlayerWallRunning : MonoBehaviour
     /// <returns>進行方向に壁があるかどうか</returns>
     public bool CheckForwardWall()
     {
-        bool hit = Physics.Raycast(transform.position, _wallForward, out var raycastHit, _layLongOfCheckForwardWallOfEndWallRun, _wallLayer);
+        bool hit = Physics.Raycast(transform.position, _wallForward, out var raycastHit, _layLongOfCheckForwardWallOfEndWallRun, _wallRunStopLayer);
         return hit;
     }
 
@@ -287,7 +294,10 @@ public class PlayerWallRunning : MonoBehaviour
         return _rightWallHit;
     }
 
-
+    public void WallRunAudio()
+    {
+        _playerController.AudioManager.PlayerSE(_wallRunSound,true);
+    }
 
 
 }

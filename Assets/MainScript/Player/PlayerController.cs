@@ -65,6 +65,10 @@ public class PlayerController : MonoBehaviour,ISave
 
     [SerializeField] private PlayerPositionSaveManager _playerPositionSaveManager;
 
+    [Header("Œø‰Ê‰¹‚ð–Â‚ç‚·—p‚ÌAudioSouce")]
+    [SerializeField] private AudioManager _audioManager;
+
+    public AudioManager AudioManager => _audioManager;
 
     public GameSetting GameSetting => _gameSetting;
 

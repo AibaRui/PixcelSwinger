@@ -7,7 +7,7 @@ public class PlayerStateIdle : PlayerStateBase
 {
     public override void Enter()
     {
-
+        _stateMachine.PlayerController.AudioManager.StopLoopPlayerSE();
     }
 
     public override void Exit()

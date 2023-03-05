@@ -10,6 +10,9 @@ public class PlayerStateSwing : PlayerStateBase
         _stateMachine.PlayerController.PlayerSwing.StartSwing();
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.Joint = _stateMachine.PlayerController.Player.GetComponent<SpringJoint>();
 
+        //ワイヤーを縮める音を流す
+        _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.WireSound();
+
         //空中ジャンプの回数調整
         _stateMachine.PlayerController.PlayerJumping.ReSetAirJump();
     }
@@ -18,6 +21,9 @@ public class PlayerStateSwing : PlayerStateBase
     {
         _stateMachine.PlayerController.PlayerSwing.StopSwing();
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.EndGrappleOrSwing();
+
+        //ループしている音(Wireの音を止める)
+        _stateMachine.PlayerController.AudioManager.StopLoopPlayerSE();
     }
 
     public override void FixedUpdate()
@@ -49,12 +55,18 @@ public class PlayerStateSwing : PlayerStateBase
             //上昇
             if (_stateMachine.PlayerController.Rb.velocity.y > 0 && !_stateMachine.PlayerController.GroundCheck.IsGround)
             {
+                //Swing終わりの音を鳴らす
+                _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.SwingAndGrappleEndSound();
+
                 _stateMachine.TransitionTo(_stateMachine.StateUpAir);
                 Debug.Log("Swing=>UpAir");
             }
             //下降
             if (_stateMachine.PlayerController.Rb.velocity.y <= 0 && !_stateMachine.PlayerController.GroundCheck.IsGround)
             {
+                //Swing終わりの音を鳴らす
+                _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.SwingAndGrappleEndSound();
+
                 _stateMachine.TransitionTo(_stateMachine.StateDownAir);
                 Debug.Log("Swing=>DownAir");
             }

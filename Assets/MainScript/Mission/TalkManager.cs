@@ -24,7 +24,15 @@ public class TalkManager : MonoBehaviour
     [Header("会話範囲内に入った時に出すアシスト表記")]
     [SerializeField] private GameObject _asistTolkPanel;
 
-    public GameObject AsistTalkPanel => _asistTolkPanel;
+    [Header("アシストパネルを出すときの音")]
+    [SerializeField] private AudioClip _showAssistUIAudio;
+
+    [Header("会話を続けるときの音")]
+    [SerializeField] private AudioClip _talkAudio;
+
+    [SerializeField] private AudioManager _audioManager;
+
+   public GameObject AsistTalkPanel => _asistTolkPanel;
 
     public GameObject Weapon => _weapons;
 
@@ -39,6 +47,22 @@ public class TalkManager : MonoBehaviour
 
 
     Vector3 _rotation;
+
+    public void TalkToNext()
+    {
+        _audioManager.PlayeGameUISE(_talkAudio);
+    }
+
+    public void OpenAssistUI()
+    {
+        _asistTolkPanel.SetActive(true);
+        _audioManager.PlayeGameUISE(_showAssistUIAudio);
+    }
+
+    public void CloseAssistUI()
+    {
+        _asistTolkPanel.SetActive(false);
+    }
 
     /// <summary>ムービーの開始時に呼ぶ。画面のUIを非表示にする</summary>
     public void OffMoiveUIs()

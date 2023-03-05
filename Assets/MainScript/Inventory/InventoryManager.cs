@@ -12,6 +12,9 @@ public class InventoryManager : MonoBehaviour
     [Header("インベントリのパネル")]
     [SerializeField] private GameObject _inventoryPanel;
 
+    [Header("インベントリのパネル")]
+    [SerializeField] private List<GameObject> _inventoryPanelIsOff = new List<GameObject>();
+
     [Header("アイテム欄")]
     [SerializeField] private LayoutGroup _itemlayoutGroup;
 
@@ -42,6 +45,12 @@ public class InventoryManager : MonoBehaviour
     [Header("武器のSpriteLendrer")]
     [SerializeField] private SpriteRenderer _gunSpriteRenderer;
 
+    [Header("インベントリを開くときの音")]
+    [SerializeField] private AudioClip _openInventoryAudio;
+
+
+    [SerializeField] private AudioManager _audioManager;
+
     private void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -55,6 +64,9 @@ public class InventoryManager : MonoBehaviour
         //マウスカーソルを出す
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+
+        //インベントリを開くときの音
+        _audioManager.PlayeGameUISE(_openInventoryAudio);
     }
 
     /// <summary>インベントリを閉じた時の処理</summary>
@@ -65,6 +77,7 @@ public class InventoryManager : MonoBehaviour
         //マウスカーソルを消す
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+        _inventoryPanelIsOff.ForEach(i => i.SetActive(false));
     }
 
     /// <summary>インベントリ内の武器スキン欄に、新しいスキンの追加する</summary>

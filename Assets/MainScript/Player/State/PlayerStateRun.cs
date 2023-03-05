@@ -7,7 +7,7 @@ public class PlayerStateRun : PlayerStateBase
 {
     public override void Enter()
     {
-
+        _stateMachine.PlayerController.PlayerMoveing.RunSound();
     }
 
     public override void Exit()

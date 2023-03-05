@@ -25,18 +25,17 @@ public class PlayerMoveing : MonoBehaviour
     [Header("空中で下向きに加速する速さ")]
     [SerializeField] bool _isDownSpeed = false;
 
-    [Header("歩き_を示すパネル")]
-    [SerializeField] private GameObject _walkPanel;
-
-    [Header("走り_を示すパネル")]
-    [SerializeField] private GameObject _runPanel;
-
     [Header("最初の設定")]
     [SerializeField] private bool _isFirstPushChange = true;
 
-
     [Header("銃")]
     [SerializeField] private Animator _anim;
+
+    [Header("足音")]
+    [SerializeField] private AudioClip _walkSound;
+
+    [Header("走りの足音")]
+    [SerializeField] private AudioClip _runSound;
 
     [SerializeField] PlayerController _playerController;
     [SerializeField] PlayerInput _playerInput;
@@ -98,16 +97,10 @@ public class PlayerMoveing : MonoBehaviour
                 if (_moveTypeIsWalk)
                 {
                     _moveSpeed = _walkSpeed;
-
-                    _walkPanel?.SetActive(true);
-                    _runPanel?.SetActive(false);
                 }
                 else
                 {
                     _moveSpeed = _runSpeed;
-
-                    _walkPanel?.SetActive(false);
-                    _runPanel?.SetActive(true);
                 }
             }
         }
@@ -116,16 +109,10 @@ public class PlayerMoveing : MonoBehaviour
             if (_playerInput.IsLeftShift)
             {
                 _moveSpeed = _runSpeed;
-
-                _walkPanel?.SetActive(false);
-                _runPanel?.SetActive(true);
             }
             else
             {
                 _moveSpeed = _walkSpeed;
-
-                _walkPanel?.SetActive(true);
-                _runPanel?.SetActive(false);
             }
 
         }
@@ -231,6 +218,15 @@ public class PlayerMoveing : MonoBehaviour
 
     }
 
+    public void WalkSound()
+    {
+        _playerController.AudioManager.PlayerSE(_walkSound, true);
+    }
+
+    public void RunSound()
+    {
+        _playerController.AudioManager.PlayerSE(_runSound, true);
+    }
 }
 
 

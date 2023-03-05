@@ -7,13 +7,15 @@ public class PlayerStateJump : PlayerStateBase
 {
     public override void Enter()
     {
-        if(_stateMachine.PlayerController.GroundCheck.IsGround)
+        if (_stateMachine.PlayerController.GroundCheck.IsGround)
         {
-        _stateMachine.PlayerController.PlayerJumping.Jump();
+            _stateMachine.PlayerController.PlayerJumping.Jump();
+            _stateMachine.PlayerController.PlayerJumping.JumpSound();
         }
         else
         {
             _stateMachine.PlayerController.PlayerJumping.AirJump();
+            _stateMachine.PlayerController.PlayerJumping.JumpSound();
         }
 
     }
@@ -57,7 +59,7 @@ public class PlayerStateJump : PlayerStateBase
             }//Grapple�Ɉڍs
         }
 
-        if (_stateMachine.PlayerController.Rb.velocity.y>0 && !_stateMachine.PlayerController.GroundCheck.IsGround)
+        if (_stateMachine.PlayerController.Rb.velocity.y > 0 && !_stateMachine.PlayerController.GroundCheck.IsGround)
         {
             _stateMachine.TransitionTo(_stateMachine.StateUpAir);
         }

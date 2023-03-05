@@ -30,16 +30,30 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
     [Header("アンカーの着地点を示すUI")]
     [SerializeField] private RectTransform _hitPointerUI;
 
-    [Header("アンカーの長さを示すText")]
-    [SerializeField] private Text _nowWireLongText;
 
-    [Header("SwingかGrappleを示すText")]
-    [SerializeField] private Text _nowSetText;
+    [Header("Swingの選択バー")]
+    [SerializeField] private GameObject _swingSelectBar;
+
+    [Header("Grappleの選択バー")]
+    [SerializeField] private GameObject _grappleSelectBar;
+
+    [Header("ワイヤーの長さの選択バー")]
+    [SerializeField] private List<GameObject> _wireLongsSelsectBar = new List<GameObject>();
 
     [Header("HitPointの初期の設定")]
     [SerializeField] private SwingHitUI _firstSwingHitUISetting;
 
-    [SerializeField] PlayerInput _playerInput;
+    [Header("SwingとGrappleを切り替えた時の音")]
+    [SerializeField] private AudioClip _changeAudio;
+
+    [Header("SwingとGrappleの終わりの音")]
+    [SerializeField] private AudioClip _swingEndClip;
+
+    [Header("SwingとGrappleのワイヤーを引く音")]
+    [SerializeField] private AudioClip _wireSound;
+
+    [SerializeField] private PlayerInput _playerInput;
+    [SerializeField] private PlayerController _playerController;
 
     [SerializeField] private LineRenderer _lr;
 
@@ -74,6 +88,7 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
     public WireLong WireLongEnum => _wireLongEnum;
 
     //Enum
+    [SerializeField]
     private SwingOrGrapple _swingOrGrappleEnum = SwingOrGrapple.Swing;
 
     //Enumのプロパティ
@@ -120,12 +135,20 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
 
     private void Start()
     {
-        //Swing/Grappleの状態を示すTextを設定
-        _nowSetText.text = _swingOrGrappleEnum.ToString();
+        if (_swingOrGrappleEnum == SwingOrGrapple.Swing)
+        {
+            _swingSelectBar.SetActive(true);
+            _grappleSelectBar.SetActive(false);
+        }
+        else
+        {
+            _swingSelectBar.SetActive(false);
+            _grappleSelectBar.SetActive(true);
+        }
 
         //ワイヤーの長さを設定
         _wireLong = _wireLongs[0];
-
+        _wireLongsSelsectBar[0].SetActive(true);
     }
 
     /// <summary>SwingとGrappleの状態を入れ替える関数</summary>
@@ -138,13 +161,18 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
             if (_swingOrGrappleEnum == SwingOrGrapple.Swing)
             {
                 _swingOrGrappleEnum = SwingOrGrapple.Grapple;
-                _nowSetText.text = "Grapple";
+                _swingSelectBar.SetActive(false);
+                _grappleSelectBar.SetActive(true);
             }
             else
             {
                 _swingOrGrappleEnum = SwingOrGrapple.Swing;
-                _nowSetText.text = "Swing";
+                _swingSelectBar.SetActive(true);
+                _grappleSelectBar.SetActive(false);
             }
+
+            //変更時の音を流す
+            _playerController.AudioManager.PlayeGameUISE(_changeAudio);
         }
 
         if (_isLongWire)
@@ -152,6 +180,9 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
             //上に
             if (_playerInput.IsMouseScrol > 0)
             {
+                //変更時の音を流す
+                _playerController.AudioManager.PlayeGameUISE(_changeAudio);
+
                 _wireLongsNum++;
                 if (_wireLongsNum == _wireLongs.Count)
                 {
@@ -159,13 +190,18 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
                 }
                 _wireLong = _wireLongs[_wireLongsNum];
 
+
                 SetEnumWireLong(_wireLongsNum);
 
-                _nowWireLongText.text = _wireLong.ToString("00");
+                _wireLongsSelsectBar.ForEach(i => i.SetActive(false));
+                _wireLongsSelsectBar[_wireLongsNum].SetActive(true);
             }
             //下に
             else if (_playerInput.IsMouseScrol < 0)
             {
+                //変更時の音を流す
+                _playerController.AudioManager.PlayeGameUISE(_changeAudio);
+
                 _wireLongsNum--;
                 if (_wireLongsNum < 0)
                 {
@@ -173,7 +209,9 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
                 }
                 _wireLong = _wireLongs[_wireLongsNum];
                 SetEnumWireLong(_wireLongsNum);
-                _nowWireLongText.text = _wireLong.ToString("00");
+
+                _wireLongsSelsectBar.ForEach(i => i.SetActive(false));
+                _wireLongsSelsectBar[_wireLongsNum].SetActive(true);
             }
         }
     }
@@ -335,4 +373,15 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
         _lr.SetPosition(0, _gunTip.position);
         _lr.SetPosition(1, _predictionHit.point);
     }
+
+    public void SwingAndGrappleEndSound()
+    {
+        _playerController.AudioManager.PlayerSE(_swingEndClip, false);
+    }
+
+    public void WireSound()
+    {
+        _playerController.AudioManager.PlayerSE(_wireSound,true);
+    }
+
 }

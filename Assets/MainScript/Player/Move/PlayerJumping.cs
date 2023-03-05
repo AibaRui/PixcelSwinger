@@ -13,9 +13,19 @@ public class PlayerJumping : MonoBehaviour
     [Header("ジャンプ回数")]
     [Tooltip("ジャンプ回数")] [SerializeField] int _jumpNum = 1;
 
+    [Header("複数回ジャンプするかどうか")]
     [SerializeField] bool _isMultiJump = false;
 
-    [SerializeField] Animator _anim;
+    [SerializeField] PlayerController _playerController;
+
+    [Header("銃のAnimations")]
+    [SerializeField] private Animator _gunAnim;
+
+    [Header("ジャンプの音")]
+    [SerializeField] private AudioClip _jumpSound;
+
+    [Header("着地の音")]
+    [SerializeField] private AudioClip _jumpEndSound;
 
     private bool _isCanJump = false;
 
@@ -76,7 +86,18 @@ public class PlayerJumping : MonoBehaviour
                 _rb.velocity = velo;
             }
         }
-        _anim.Play("GunJumpUp");
+        _gunAnim.Play("GunJumpUp");
     }
+
+    public void JumpSound()
+    {
+        _playerController.AudioManager.PlayerSE(_jumpSound,false);
+    }
+
+    public void JumpEndSound()
+    {
+        _playerController.AudioManager.PlayerSE(_jumpEndSound,false);
+    }
+
 }
 

@@ -9,8 +9,6 @@ public class AudioSetting : MonoBehaviour
     [Header("全体の音量")]
     [SerializeField] private AudioMixer _audioMixer;
 
-
-
     [Header("MasterのGroupに設定したVolumeパラメータの名前")]
     [SerializeField] private string _masterVolumeName;
 

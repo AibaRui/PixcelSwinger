@@ -95,12 +95,14 @@ public class PlayerStateDownAir : PlayerStateBase
         if ((h == 0 || v == 0) && _stateMachine.PlayerController.GroundCheck.IsGround)
         {
             _stateMachine.TransitionTo(_stateMachine.StateIdle);
+            _stateMachine.PlayerController.PlayerJumping.JumpEndSound();
             return;
         }
 
         if ((h != 0 || v != 0) && _stateMachine.PlayerController.GroundCheck.IsGround)
         {
             _stateMachine.TransitionTo(_stateMachine.StateWalk);
+            _stateMachine.PlayerController.PlayerJumping.JumpEndSound();
             return;
         }
 

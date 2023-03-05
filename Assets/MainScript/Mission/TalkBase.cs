@@ -59,7 +59,7 @@ public abstract class TalkBase : MonoBehaviour
                 _talkManager.TalkPanel.SetActive(true);
 
                 //アシスト表記を消す
-                _talkManager.AsistTalkPanel.SetActive(false);
+                _talkManager.CloseAssistUI();
 
                 _isTalkNow = true;
                 StartCoroutine(Talk());
@@ -83,6 +83,9 @@ public abstract class TalkBase : MonoBehaviour
         {
             //テキストを更新
             _talkManager.TalkText.text = _nowTalkText[i];
+            //音を流す
+            _talkManager.TalkToNext();
+
             //会話中のイベントがあったら呼ぶ
             TalkInEvent(i);
 
@@ -107,7 +110,7 @@ public abstract class TalkBase : MonoBehaviour
         _isTalkNow = false;
 
         //アシスト表記を出す
-        _talkManager.AsistTalkPanel.SetActive(true);
+        _talkManager.OpenAssistUI();
 
         //Event状態を終える
         _eventController.ChangeEventSituationFalse();
@@ -117,7 +120,7 @@ public abstract class TalkBase : MonoBehaviour
     {
         if (other.gameObject.tag == "Player" && _talkManager.AsistTalkPanel.activeSelf == false)
         {
-            _talkManager.AsistTalkPanel.SetActive(true);
+            _talkManager.OpenAssistUI();
             _talkManager.TalkBase = this;
             _isEnter = true;
         }
@@ -127,7 +130,7 @@ public abstract class TalkBase : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            _talkManager.AsistTalkPanel.SetActive(false);
+            _talkManager.CloseAssistUI();
             _isEnter = false;
         }
     }

@@ -8,6 +8,7 @@ public class PlayerStateEventStop : PlayerStateBase
     public override void Enter()
     {
         _stateMachine.PlayerController.TalkManager.DoTalk();
+        _stateMachine.PlayerController.AudioManager.StartTalk();
     }
 
     public override void Exit()

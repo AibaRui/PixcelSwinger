@@ -7,7 +7,7 @@ public class PlayerStateWalk : PlayerStateBase
 {
     public override void Enter()
     {
-
+        _stateMachine.PlayerController.PlayerMoveing.WalkSound();
     }
 
     public override void Exit()
