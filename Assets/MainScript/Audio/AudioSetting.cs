@@ -59,6 +59,9 @@ public class AudioSetting : MonoBehaviour
 
     private float _nowGameEffectVolume;
 
+    private bool _isChangeSetting = false;
+
+    public bool IsChange => _isChangeSetting;
 
     private void Start()
     {
@@ -108,14 +111,34 @@ public class AudioSetting : MonoBehaviour
     /// <summary>設定画面で変更した内容を適用したかどうかを確認する</summary>
     public void CheckDoSetting()
     {
-        if (_masterAudioSlider.value != _nowMasterVolume || _bgmSlider.value != _nowBGMVolume
-            || _systemEffectSlider.value != _nowSystemVolume || _gameEffectSlider.value != _nowGameEffectVolume)
+        if (_masterAudioSlider.value != _nowMasterVolume)
         {
             _warningPanel.SetActive(true);
+            _isChangeSetting = true;
+            Debug.Log("マスター音量の変更を適用していません");
+        }
+        else if (_bgmSlider.value != _nowBGMVolume)
+        {
+            _warningPanel.SetActive(true);
+            _isChangeSetting = true;
+            Debug.Log("BGM音量の変更を適用していません");
+        }
+        else if (_systemEffectSlider.value != _nowSystemVolume)
+        {
+            _warningPanel.SetActive(true);
+            _isChangeSetting = true;
+            Debug.Log("System音量の変更を適用していません");
+        }
+        else if (_gameEffectSlider.value != _nowGameEffectVolume)
+        {
+            _warningPanel.SetActive(true);
+            _isChangeSetting = true;
+            Debug.Log("gameEF音量の変更を適用していません");
         }
         else
         {
             _settingPanel.SetActive(false);
+            _isChangeSetting = false;
         }
     }
 
@@ -132,6 +155,7 @@ public class AudioSetting : MonoBehaviour
     /// <summary>音量設定を初期化する関数</summary>
     public void ReSetSetting(bool isFirstLode)
     {
+
         SetMasterVolume(_firstVolume);
         SetBGMVolume(_firstVolume);
         SetGameEffectVolume(_firstVolume);

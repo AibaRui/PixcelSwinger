@@ -20,10 +20,17 @@ public class UIShowSystem : MonoBehaviour
     [Header("設定画面の、[UIを出さない]ボタンのバー")]
     [SerializeField] private GameObject _isAnShowButtunSetBar;
 
+    [Header("プレイヤーのRigidbody")]
+    [SerializeField] private Rigidbody _playerigidBody;
+
+    [SerializeField] private PlayerController _playerController;
+
+    /// <summary>アシストパネルを出すかどうか。(設定で出す出さないの変更ができる)</summary>
     private bool _isShowUI = true;
+
+    /// <summary>プレイヤーが動いていない時間を数える</summary>
     private float _countTime;
 
-    [SerializeField] private Rigidbody _playerigidBody;
     public bool FirstIsShowUI => _firstIsShowUI;
 
     public bool IsShowUI { get => _isShowUI; set => _isShowUI = value; }
@@ -65,13 +72,16 @@ public class UIShowSystem : MonoBehaviour
     {
         if (_isShowUI)
         {
-            if (_countTime < _setTime)
+            if (_playerController.IsMove)
             {
-                _countTime += Time.deltaTime;
-            }
-            else
-            {
-                _panels.ForEach(i => i.SetActive(true));
+                if (_countTime < _setTime)
+                {
+                    _countTime += Time.deltaTime;
+                }
+                else
+                {
+                    _panels.ForEach(i => i.SetActive(true));
+                }
             }
         }
     }

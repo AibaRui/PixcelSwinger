@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 
-public class PlayerController : MonoBehaviour,ISave
+public class PlayerController : MonoBehaviour, ISave
 {
 
     [SerializeField]
@@ -63,11 +63,15 @@ public class PlayerController : MonoBehaviour,ISave
     [SerializeField]
     private GameSetting _gameSetting;
 
+    [SerializeField]
+    private AudioSetting _audioSetting;
+
     [SerializeField] private PlayerPositionSaveManager _playerPositionSaveManager;
 
     [Header("Œø‰Ê‰¹‚ð–Â‚ç‚·—p‚ÌAudioSouce")]
     [SerializeField] private AudioManager _audioManager;
 
+    public AudioSetting AudioSetting => _audioSetting;
     public AudioManager AudioManager => _audioManager;
 
     public GameSetting GameSetting => _gameSetting;
@@ -121,6 +125,10 @@ public class PlayerController : MonoBehaviour,ISave
     private OperationsLevel _operationLevl = OperationsLevel.Eazy;
 
     public OperationsLevel OperationLevel { get => _operationLevl; set => _operationLevl = value; }
+
+    private bool _isMove = true;
+
+    public bool IsMove { get => _isMove; set => _isMove = value; }
 
     public enum OperationsLevel
     {

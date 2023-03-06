@@ -10,6 +10,9 @@ public class PlayerStateGrapple : PlayerStateBase
         _stateMachine.PlayerController.PlayerGrapple.StartGrapple();
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.Joint = _stateMachine.PlayerController.Player.GetComponent<SpringJoint>();
 
+        //e‚ÌƒAƒjƒ[ƒVƒ‡ƒ“
+        _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.SwingOrGrappleAinm();
+
         //ƒƒCƒ„[‚ðk‚ß‚é‰¹‚ð—¬‚·
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.WireSound();
 
@@ -20,7 +23,12 @@ public class PlayerStateGrapple : PlayerStateBase
     public override void Exit()
     {
         _stateMachine.PlayerController.PlayerGrapple.StopGrapple();
-        _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.EndGrappleOrSwing();
+
+        if (_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckPointIsHit())
+        {
+            _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.EndGrappleOrSwing();
+        }
+
 
         //ƒ‹[ƒv‚µ‚Ä‚¢‚é‰¹(Wire‚Ì‰¹‚ðŽ~‚ß‚é)
         _stateMachine.PlayerController.AudioManager.StopLoopPlayerSE();
@@ -48,7 +56,7 @@ public class PlayerStateGrapple : PlayerStateBase
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckForSwingPoints();
 
         //—£‚µ‚½‚çSwing‚ð’†Ž~
-        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickUp)
+        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickUp || !_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckPointIsHit())
         {
             //ã¸
             if (_stateMachine.PlayerController.Rb.velocity.y > 0 && !_stateMachine.PlayerController.GroundCheck.IsGround)
@@ -76,7 +84,7 @@ public class PlayerStateGrapple : PlayerStateBase
         var h = _stateMachine.PlayerController.PlayerInput.HorizontalInput;
         var v = _stateMachine.PlayerController.PlayerInput.VerticalInput;
 
-        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickUp)
+        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickUp || !_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckPointIsHit())
         {
             if (_stateMachine.PlayerController.GroundCheck.IsGround)
             {

@@ -30,7 +30,6 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
     [Header("アンカーの着地点を示すUI")]
     [SerializeField] private RectTransform _hitPointerUI;
 
-
     [Header("Swingの選択バー")]
     [SerializeField] private GameObject _swingSelectBar;
 
@@ -51,6 +50,15 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
 
     [Header("SwingとGrappleのワイヤーを引く音")]
     [SerializeField] private AudioClip _wireSound;
+
+    [Header("Gunのアニメーション")]
+    [SerializeField] private Animator _gunAnim;
+
+    [Header("GunのアニメーションのAnimatorの名前")]
+    [SerializeField] private string _gunAnimName = "Gun_SwingFirst";
+
+    [Header("GunのアニメーションのAnimatorの名前")]
+    [SerializeField] private string _gunAnimBool = "IsSwingOrGrapple";
 
     [SerializeField] private PlayerInput _playerInput;
     [SerializeField] private PlayerController _playerController;
@@ -149,6 +157,12 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
         //ワイヤーの長さを設定
         _wireLong = _wireLongs[0];
         _wireLongsSelsectBar[0].SetActive(true);
+    }
+
+    public void SwingOrGrappleAinm()
+    {
+        _gunAnim.Play(_gunAnimName);
+        _gunAnim.SetBool(_gunAnimBool, true);
     }
 
     /// <summary>SwingとGrappleの状態を入れ替える関数</summary>
@@ -291,6 +305,20 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
         _predictionHit = raycastHit.point == Vector3.zero ? spherCastHit : raycastHit;
     }
 
+    public bool CheckPointIsHit()
+    {
+        //アンカー設置点のマーカーの場所を設定
+        if (_predictionPoint.gameObject.activeSelf)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
     /// <summary>Swing中に[Hit!]のUIを表示する仕組み</summary>
     public void ActivePointer()
     {
@@ -347,6 +375,8 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
     /// <summary>Siwng終わりに呼ぶ</summary>
     public void EndGrappleOrSwing()
     {
+        _gunAnim.SetBool(_gunAnimBool, false);
+
         //[Hit!]のUIを非表示にする
         _isEndHitPoinAnim = false;
         _countTime = 0;

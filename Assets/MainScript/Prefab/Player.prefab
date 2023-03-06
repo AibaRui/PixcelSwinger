@@ -162,9 +162,9 @@ MonoBehaviour:
   _eventController: {fileID: 0}
   _talkManager: {fileID: 0}
   _inventoryManager: {fileID: 0}
-  _uiShowSystem: {fileID: 0}
   _gameSetting: {fileID: 0}
   _playerPositionSaveManager: {fileID: 0}
+  _audioManager: {fileID: 0}
   _firstOperationLevl: 0
 --- !u!114 &818396588471781205
 MonoBehaviour:
@@ -280,20 +280,27 @@ MonoBehaviour:
   _gunTip: {fileID: 0}
   _wallLayer:
     serializedVersion: 2
-    m_Bits: 3264
+    m_Bits: 11456
   _predictionPoint: {fileID: 0}
   _wireLongs:
   - 50
-  - 100
-  - 200
   _endHitPoitAnimSecond: 0.5
   _hitPointer: {fileID: 0}
   _hitPointerUI: {fileID: 0}
-  _nowWireLongText: {fileID: 0}
-  _nowSetText: {fileID: 0}
+  _swingSelectBar: {fileID: 0}
+  _grappleSelectBar: {fileID: 0}
+  _wireLongsSelsectBar:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   _firstSwingHitUISetting: 2
+  _changeAudio: {fileID: 0}
+  _swingEndClip: {fileID: 8300000, guid: 6fcb377a0f823a94fbe92a9679e2f625, type: 3}
+  _wireSound: {fileID: 8300000, guid: 4090c8f85f992c245bc24a6c20afa32a, type: 3}
   _playerInput: {fileID: 818396588471781205}
+  _playerController: {fileID: 818396588471781207}
   _lr: {fileID: 818396588471781290}
+  _swingOrGrappleEnum: 0
 --- !u!114 &818396588471781203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -313,10 +320,10 @@ MonoBehaviour:
   _addDownAirEazy: 5
   _addDownAirNomal: 10
   _isDownSpeed: 1
-  _walkPanel: {fileID: 0}
-  _runPanel: {fileID: 0}
   _isFirstPushChange: 1
   _anim: {fileID: 0}
+  _walkSound: {fileID: 8300000, guid: 571f582a890e1c54f8121bb17dbafad1, type: 3}
+  _runSound: {fileID: 8300000, guid: c5805e7e63934c846acdea68fe7c6c80, type: 3}
   _playerController: {fileID: 818396588471781207}
   _playerInput: {fileID: 818396588471781205}
   _playerVelocityLimitControl: {fileID: 818396588471781294}
@@ -336,7 +343,10 @@ MonoBehaviour:
   _airJumpPower: 10
   _jumpNum: 2
   _isMultiJump: 1
-  _anim: {fileID: 0}
+  _playerController: {fileID: 818396588471781207}
+  _gunAnim: {fileID: 0}
+  _jumpSound: {fileID: 8300000, guid: 482cb83fb120ef94f85d703e6f1bbc89, type: 3}
+  _jumpEndSound: {fileID: 8300000, guid: 5d3470b83eec70f43a68b846b73dc40d, type: 3}
 --- !u!114 &818396588471781289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -368,14 +378,18 @@ MonoBehaviour:
   _wallLayer:
     serializedVersion: 2
     m_Bits: 3072
+  _wallRunStopLayer:
+    serializedVersion: 2
+    m_Bits: 2147483647
   _cameraDutch: 5
   _changeCameraSpeed: 5
   _jumpPower: 10
   _wallRunCoolTime: 0.5
   _addJumpDir: {x: 4, y: 4}
   _layLongOfCheckForwardWallOfEndWallRun: 2
-  _anim: {fileID: 0}
-  _aud: {fileID: 0}
+  _wallRunSound: {fileID: 8300000, guid: c5805e7e63934c846acdea68fe7c6c80, type: 3}
+  _playerController: {fileID: 818396588471781207}
+  _gunAnim: {fileID: 0}
 --- !u!114 &818396588471781293
 MonoBehaviour:
   m_ObjectHideFlags: 0

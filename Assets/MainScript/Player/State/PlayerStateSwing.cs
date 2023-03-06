@@ -5,10 +5,14 @@ using UnityEngine;
 [System.Serializable]
 public class PlayerStateSwing : PlayerStateBase
 {
+    
     public override void Enter()
     {
         _stateMachine.PlayerController.PlayerSwing.StartSwing();
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.Joint = _stateMachine.PlayerController.Player.GetComponent<SpringJoint>();
+
+        //銃のアニメーション
+        _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.SwingOrGrappleAinm();
 
         //ワイヤーを縮める音を流す
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.WireSound();
@@ -24,6 +28,12 @@ public class PlayerStateSwing : PlayerStateBase
 
         //ループしている音(Wireの音を止める)
         _stateMachine.PlayerController.AudioManager.StopLoopPlayerSE();
+
+
+
+       
+
+
     }
 
     public override void FixedUpdate()
@@ -47,15 +57,14 @@ public class PlayerStateSwing : PlayerStateBase
     {
         //_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckForSwingPoints();
 
-        _stateMachine.PlayerController.PlayerSwing.LegAnimation();
-
         //離したらSwingを中止
-        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickUp)
+        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickUp ||! _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckPointIsHit())
         {
             //上昇
             if (_stateMachine.PlayerController.Rb.velocity.y > 0 && !_stateMachine.PlayerController.GroundCheck.IsGround)
             {
                 //Swing終わりの音を鳴らす
+                if(_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckPointIsHit())
                 _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.SwingAndGrappleEndSound();
 
                 _stateMachine.TransitionTo(_stateMachine.StateUpAir);
@@ -65,7 +74,8 @@ public class PlayerStateSwing : PlayerStateBase
             if (_stateMachine.PlayerController.Rb.velocity.y <= 0 && !_stateMachine.PlayerController.GroundCheck.IsGround)
             {
                 //Swing終わりの音を鳴らす
-                _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.SwingAndGrappleEndSound();
+                if (_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckPointIsHit())
+                    _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.SwingAndGrappleEndSound();
 
                 _stateMachine.TransitionTo(_stateMachine.StateDownAir);
                 Debug.Log("Swing=>DownAir");
@@ -75,7 +85,7 @@ public class PlayerStateSwing : PlayerStateBase
             var h = _stateMachine.PlayerController.PlayerInput.HorizontalInput;
             var v = _stateMachine.PlayerController.PlayerInput.VerticalInput;
 
-            if (_stateMachine.PlayerController.GroundCheck.IsGround)
+            if (_stateMachine.PlayerController.GroundCheck.IsGround ||! _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckPointIsHit())
             {
                 if ((h != 0 && v != 0))
                 {
@@ -94,5 +104,10 @@ public class PlayerStateSwing : PlayerStateBase
 
     }
 
+
+    public void Updatas()
+    {
+
+    }
 
 }
