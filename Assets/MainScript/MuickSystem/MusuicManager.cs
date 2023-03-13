@@ -90,7 +90,7 @@ public class MusuicManager : MonoBehaviour
                 }
             }
             //データをセーブ
-            _saveManager.DaveSave();
+            _saveManager.DataSave();
         }
     }
 

@@ -44,7 +44,5 @@ public class MouseSensitivity : MonoBehaviour
         _mouseSensivitySlider.value = value;
         _nowSensivity = value;
 
-        Debug.Log("—^‚¦‚ç‚ê"+value);
-        Debug.Log("suaiad" + _mouseSensivitySlider.value);
     }
 }

@@ -10,6 +10,9 @@ public class TalkManager : MonoBehaviour
     [Header("Movie中に非表示にしたいもの")]
     [SerializeField] private List<GameObject> _offObjectWithMovie = new List<GameObject>();
 
+    [Header("Movie中に止めたい音")]
+    [SerializeField] private List<AudioSource> _offAudio = new List<AudioSource>();
+
     [SerializeField] private GameObject _weapons;
 
     [Header("会話のおおもとのパネル")]
@@ -68,6 +71,9 @@ public class TalkManager : MonoBehaviour
     public void OffMoiveUIs()
     {
         _offObjectWithMovie.ForEach(i => i.SetActive(false));
+
+        _offAudio.ForEach(i => i.Stop());
+
         _rotation = _weapons.transform.eulerAngles;
     }
 
@@ -75,6 +81,9 @@ public class TalkManager : MonoBehaviour
     public void OnMovieUIs()
     {
         _offObjectWithMovie.ForEach(i => i.SetActive(true));
+
+        _offAudio.ForEach(i => i.Play());
+
         _weapons.transform.eulerAngles = _rotation;
     }
 

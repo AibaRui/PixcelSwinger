@@ -24,6 +24,7 @@ public class UIShowSystem : MonoBehaviour
     [SerializeField] private Rigidbody _playerigidBody;
 
     [SerializeField] private PlayerController _playerController;
+    [SerializeField] private EventController _eventController;
 
     /// <summary>アシストパネルを出すかどうか。(設定で出す出さないの変更ができる)</summary>
     private bool _isShowUI = true;
@@ -72,7 +73,7 @@ public class UIShowSystem : MonoBehaviour
     {
         if (_isShowUI)
         {
-            if (_playerController.IsMove)
+            if (!_eventController.IsEventNow)
             {
                 if (_countTime < _setTime)
                 {

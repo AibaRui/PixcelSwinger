@@ -108,7 +108,7 @@ public class ItemManager : MonoBehaviour, ISave
             if (!_isFirstLoad)
             {
 
-                _saveManager.DaveSave();
+                _saveManager.DataSave();
             }
 
         }

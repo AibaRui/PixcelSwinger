@@ -11,6 +11,9 @@ public class TitleManager : MonoBehaviour
     [Header("NewGameのゲームシーン")]
     [SerializeField] string _newGameSceneName = "";
 
+    [Header("FREEのゲームシーン")]
+    [SerializeField] string _freeSceneName = "";
+
     [Header("セーブデータが無いことを警告するパネル")]
     [SerializeField] GameObject _panelNoSaveData;
 
@@ -54,5 +57,9 @@ public class TitleManager : MonoBehaviour
         SceneManager.LoadScene(_newGameSceneName);
     }
 
-
+    public void FreeGame()
+    {
+        //シーンを読み込む
+        SceneManager.LoadScene(_freeSceneName);
+    }
 }

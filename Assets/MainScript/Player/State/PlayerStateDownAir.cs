@@ -32,13 +32,13 @@ public class PlayerStateDownAir : PlayerStateBase
         var h = _stateMachine.PlayerController.PlayerInput.HorizontalInput;
         var v = _stateMachine.PlayerController.PlayerInput.VerticalInput;
 
-        //Swing用の標準システムの関数
+        //Swing/Grappeのワイヤーの刺せる場所を探す
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckForSwingPoints();
 
         //Swingのモード切替
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.ChangeTypeSwingOrGrapple();
         //Swing
-        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickDown)
+        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickDown && _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.IsHit)
         {
             if (_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.SwingOrGrappleEnum == PlayerGrappleAndSwingSetting.SwingOrGrapple.Swing)
             {

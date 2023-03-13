@@ -18,6 +18,8 @@ public class PlayerStateJump : PlayerStateBase
             _stateMachine.PlayerController.PlayerJumping.JumpSound();
         }
 
+        //ループの音を消す
+        _stateMachine.PlayerController.AudioManager.StopLoopPlayerSE();
     }
 
     public override void Exit()
@@ -36,14 +38,14 @@ public class PlayerStateJump : PlayerStateBase
 
     public override void Update()
     {
-
-        //Swing用の標準システムの関数
-        _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckForSwingPoints();
         //Swingのモード切替
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.ChangeTypeSwingOrGrapple();
 
+        //Swing/Grappeのワイヤーの刺せる場所を探す
+        _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckForSwingPoints();
+
         //Swing
-        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickDown)
+        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickDown && _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.IsHit)
         {
             if (_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.SwingOrGrappleEnum == PlayerGrappleAndSwingSetting.SwingOrGrapple.Swing)
             {

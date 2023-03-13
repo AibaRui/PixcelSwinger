@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Cinemachine;
 
 public class PlayerGrappleAndSwingSetting : MonoBehaviour
 {
@@ -81,12 +82,17 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
 
     private bool _isEndHitPoinAnim = false;
 
+    private bool _isHit;
+
+
     private SpringJoint _joint;
 
     private SwingHitUI _swingHitUISetting;
 
+    [SerializeField]
+    private bool _isLongWire = false;
 
-    private bool _isLongWire;
+    public bool IsHit => _isHit;
 
     public bool IsLongWire { get => _isLongWire; set => _isLongWire = value; }
 
@@ -157,12 +163,19 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
         //ワイヤーの長さを設定
         _wireLong = _wireLongs[0];
         _wireLongsSelsectBar[0].SetActive(true);
+
     }
 
     public void SwingOrGrappleAinm()
     {
         _gunAnim.Play(_gunAnimName);
         _gunAnim.SetBool(_gunAnimBool, true);
+    }
+
+
+    public void UnLockLongWire()
+    {
+        _isLongWire = true;
     }
 
     /// <summary>SwingとGrappleの状態を入れ替える関数</summary>
@@ -194,6 +207,7 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
             //上に
             if (_playerInput.IsMouseScrol > 0)
             {
+                Debug.Log("aaaa");
                 //変更時の音を流す
                 _playerController.AudioManager.PlayeGameUISE(_changeAudio);
 
@@ -290,19 +304,24 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
             realHitPoint = Vector3.zero;
         }
 
+
+
         //アンカー設置点のマーカーの場所を設定
         if (realHitPoint != Vector3.zero)
         {
             _predictionPoint.gameObject.SetActive(true);
             _predictionPoint.position = realHitPoint;
+            _isHit = true;
         }
         else
         {
             _predictionPoint.gameObject.SetActive(false);
+            _isHit = false;
         }
 
         //rayが当たらなかったらSpherCastの情報をいれる
         _predictionHit = raycastHit.point == Vector3.zero ? spherCastHit : raycastHit;
+
     }
 
     public bool CheckPointIsHit()
@@ -399,10 +418,18 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
         //線を引く位置を決める
         //0は線を引く開始点
         //１は線を引く終了点
+
+
+
         _lr.positionCount = 2;
+
+
         _lr.SetPosition(0, _gunTip.position);
         _lr.SetPosition(1, _predictionHit.point);
     }
+
+
+
 
     public void SwingAndGrappleEndSound()
     {
@@ -411,7 +438,7 @@ public class PlayerGrappleAndSwingSetting : MonoBehaviour
 
     public void WireSound()
     {
-        _playerController.AudioManager.PlayerSE(_wireSound,true);
+        _playerController.AudioManager.PlayerSE(_wireSound, true);
     }
 
 }

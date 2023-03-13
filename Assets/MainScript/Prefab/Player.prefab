@@ -163,6 +163,7 @@ MonoBehaviour:
   _talkManager: {fileID: 0}
   _inventoryManager: {fileID: 0}
   _gameSetting: {fileID: 0}
+  _audioSetting: {fileID: 0}
   _playerPositionSaveManager: {fileID: 0}
   _audioManager: {fileID: 0}
   _firstOperationLevl: 0
@@ -297,6 +298,9 @@ MonoBehaviour:
   _changeAudio: {fileID: 0}
   _swingEndClip: {fileID: 8300000, guid: 6fcb377a0f823a94fbe92a9679e2f625, type: 3}
   _wireSound: {fileID: 8300000, guid: 4090c8f85f992c245bc24a6c20afa32a, type: 3}
+  _gunAnim: {fileID: 0}
+  _gunAnimName: Gun_SwingFirst
+  _gunAnimBool: IsSwingOrGrapple
   _playerInput: {fileID: 818396588471781205}
   _playerController: {fileID: 818396588471781207}
   _lr: {fileID: 818396588471781290}

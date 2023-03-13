@@ -32,6 +32,7 @@ public class GunSkinManager : MonoBehaviour, ISave
     private bool _isFirstLoad = true;
 
 
+
     public List<string> FirstSkinData => _firstgunSkinDatas;
 
     //SaveData—p
@@ -108,7 +109,7 @@ public class GunSkinManager : MonoBehaviour, ISave
         if (!_isFirstLoad)
         {
 
-            _saveManager.DaveSave();
+            _saveManager.DataSave();
         }
     }
 

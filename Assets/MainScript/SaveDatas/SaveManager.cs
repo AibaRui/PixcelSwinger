@@ -74,7 +74,7 @@ public class SaveManager : MonoBehaviour
 
 
 
-    public void DaveSave()
+    public void DataSave()
     {
         if (_isSave)
         {

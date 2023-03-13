@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class PlayerStateSwing : PlayerStateBase
 {
-    
+
     public override void Enter()
     {
         _stateMachine.PlayerController.PlayerSwing.StartSwing();
@@ -31,7 +31,7 @@ public class PlayerStateSwing : PlayerStateBase
 
 
 
-       
+
 
 
     }
@@ -58,14 +58,14 @@ public class PlayerStateSwing : PlayerStateBase
         //_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckForSwingPoints();
 
         //—£‚µ‚½‚çSwing‚ð’†Ž~
-        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickUp ||! _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckPointIsHit())
+        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickUp || !_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckPointIsHit())
         {
             //ã¸
             if (_stateMachine.PlayerController.Rb.velocity.y > 0 && !_stateMachine.PlayerController.GroundCheck.IsGround)
             {
                 //SwingI‚í‚è‚Ì‰¹‚ð–Â‚ç‚·
-                if(_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckPointIsHit())
-                _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.SwingAndGrappleEndSound();
+                if (_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckPointIsHit())
+                    _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.SwingAndGrappleEndSound();
 
                 _stateMachine.TransitionTo(_stateMachine.StateUpAir);
                 Debug.Log("Swing=>UpAir");
@@ -85,7 +85,8 @@ public class PlayerStateSwing : PlayerStateBase
             var h = _stateMachine.PlayerController.PlayerInput.HorizontalInput;
             var v = _stateMachine.PlayerController.PlayerInput.VerticalInput;
 
-            if (_stateMachine.PlayerController.GroundCheck.IsGround ||! _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckPointIsHit())
+            if (_stateMachine.PlayerController.GroundCheck.IsGround && _stateMachine.PlayerController.PlayerInput.IsLeftMouseClickUp
+                || (_stateMachine.PlayerController.GroundCheck.IsGround && !_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckPointIsHit()))
             {
                 if ((h != 0 && v != 0))
                 {

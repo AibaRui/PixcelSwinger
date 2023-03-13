@@ -7,7 +7,7 @@ public class PlayerStateWalk : PlayerStateBase
 {
     public override void Enter()
     {
-        _stateMachine.PlayerController.PlayerMoveing.WalkSound();
+        _stateMachine.PlayerController.PlayerMoveing.WalkSoundAndAnimation();
     }
 
     public override void Exit()
@@ -59,13 +59,14 @@ public class PlayerStateWalk : PlayerStateBase
         //段差登りの壁チェック
         _stateMachine.PlayerController.WallCheck.CheckClimbWall();
 
-        //Swing用の標準システムの関数
-        _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckForSwingPoints();
         //Swingのモード切替
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.ChangeTypeSwingOrGrapple();
 
+        //Swing/Grappeのワイヤーの刺せる場所を探す
+        _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckForSwingPoints();
+
         //Swing
-        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickDown)
+        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickDown && _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.IsHit)
         {
             if (_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.SwingOrGrappleEnum == PlayerGrappleAndSwingSetting.SwingOrGrapple.Swing)
             {
@@ -111,13 +112,13 @@ public class PlayerStateWalk : PlayerStateBase
             }
             else
             {
-                //ctrlをおしたらしゃがむ
-                if (_stateMachine.PlayerController.PlayerInput.IsCtrlDown)
-                {
-                    _stateMachine.TransitionTo(_stateMachine.StateSquat);
-                    Debug.Log("Walk=>Squat");
-                    return;
-                }
+                ////ctrlをおしたらしゃがむ
+                //if (_stateMachine.PlayerController.PlayerInput.IsCtrlDown)
+                //{
+                //    _stateMachine.TransitionTo(_stateMachine.StateSquat);
+                //    Debug.Log("Walk=>Squat");
+                //    return;
+                //}
             }
         }
 

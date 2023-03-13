@@ -56,12 +56,15 @@ public class CheckMission : TalkBase
     {
         if (_missionManager.NowMainMission != null)
         {
+            Debug.Log("ÇÊÇŒÇÍÇΩ");
             foreach (var a in _missionManager.NowMainMission.TalkEvent)
             {
                 if (a.MissionSituation == _missionManager._mainMissionSituation)
                 {
+                    Debug.Log("Ç†Ç¡ÇƒÇÈ");
                     if (a.Num == talkNum)
                     {
+                        Debug.Log("î≠ê∂");
                         _isEvent = true;
                         a.UnityEvent?.Invoke();
                     }

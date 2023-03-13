@@ -52,8 +52,6 @@ public class PlayerStateGrapple : PlayerStateBase
 
     public override void Update()
     {
-        //スウィングのポイントの表示
-        _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckForSwingPoints();
 
         //離したらSwingを中止
         if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickUp || !_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckPointIsHit())

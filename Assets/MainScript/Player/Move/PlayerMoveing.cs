@@ -166,11 +166,7 @@ public class PlayerMoveing : MonoBehaviour
         //Vector3 velocity = _rb.velocity;
         // velocity.y = 0f;
 
-        if (_rb.velocity.x != 0 || _rb.velocity.z != 0)
-        {
-            _anim.SetFloat("Speed", _moveSpeed);
-        }
-
+        _anim.SetFloat("Speed", _moveSpeed);
     }
 
     /// <summary>ãÛíÜÇ≈ÇÃìÆÇ´ÅBAddForceÇ≈êßå‰</summary>
@@ -218,14 +214,18 @@ public class PlayerMoveing : MonoBehaviour
 
     }
 
-    public void WalkSound()
+    public void WalkSoundAndAnimation()
     {
         _playerController.AudioManager.PlayerSE(_walkSound, true);
+
+
     }
 
-    public void RunSound()
+    public void RunSoundAndAnimation()
     {
         _playerController.AudioManager.PlayerSE(_runSound, true);
+
+
     }
 }
 

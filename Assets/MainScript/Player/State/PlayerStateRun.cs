@@ -7,7 +7,7 @@ public class PlayerStateRun : PlayerStateBase
 {
     public override void Enter()
     {
-        _stateMachine.PlayerController.PlayerMoveing.RunSound();
+        _stateMachine.PlayerController.PlayerMoveing.RunSoundAndAnimation();
     }
 
     public override void Exit()
@@ -39,13 +39,14 @@ public class PlayerStateRun : PlayerStateBase
         //段差登りの壁チェック
         _stateMachine.PlayerController.WallCheck.CheckClimbWall();
 
-        //Swing用の標準システムの関数
-        _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckForSwingPoints();
         //Swingのモード切替
         _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.ChangeTypeSwingOrGrapple();
 
+        //Swing/Grappeのワイヤーの刺せる場所を探す
+        _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.CheckForSwingPoints();
+
         //Swing
-        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickDown)
+        if (_stateMachine.PlayerController.PlayerInput.IsLeftMouseClickDown && _stateMachine.PlayerController.PlayerSwingAndGrappleSetting.IsHit)
         {
             if (_stateMachine.PlayerController.PlayerSwingAndGrappleSetting.SwingOrGrappleEnum == PlayerGrappleAndSwingSetting.SwingOrGrapple.Swing)
             {
@@ -88,21 +89,21 @@ public class PlayerStateRun : PlayerStateBase
             //ctrlを押したらスライディング
             else if (v > 0)
             {
-                if (_stateMachine.PlayerController.PlayerInput.IsCtrlDown)
-                {
-                    if (_stateMachine.PlayerController.PlayerSquatAndSliding.IsSliding)
-                    {
-                        _stateMachine.TransitionTo(_stateMachine.StateSliding);
-                        Debug.Log("Run=>Sliding");
-                        return;
-                    }
-                    else
-                    {
-                        _stateMachine.TransitionTo(_stateMachine.StateSquat);
-                        Debug.Log("Run=>Squat");
-                        return;
-                    }
-                }
+                //if (_stateMachine.PlayerController.PlayerInput.IsCtrlDown)
+                //{
+                //    if (_stateMachine.PlayerController.PlayerSquatAndSliding.IsSliding)
+                //    {
+                //        _stateMachine.TransitionTo(_stateMachine.StateSliding);
+                //        Debug.Log("Run=>Sliding");
+                //        return;
+                //    }
+                //    else
+                //    {
+                //        _stateMachine.TransitionTo(_stateMachine.StateSquat);
+                //        Debug.Log("Run=>Squat");
+                //        return;
+                //    }
+                //}
             }
         }
 

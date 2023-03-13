@@ -48,7 +48,7 @@ public class PlayerStateOpenInventory : PlayerStateBase
             //音量設定の変更内容を適用したか
             _stateMachine.PlayerController.AudioSetting.CheckDoSetting();
 
-            if (_stateMachine.PlayerController.GameSetting.IsChangeSetting && _stateMachine.PlayerController.AudioSetting.IsChange)
+            if (_stateMachine.PlayerController.GameSetting.IsChangeSetting || _stateMachine.PlayerController.AudioSetting.IsChange)
             {
 
             }
