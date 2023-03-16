@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class PlayerGrapple : MonoBehaviour
 {
-
+    [Header("Grapple中の水平方向の加速速度")]
     [SerializeField] float _swingMoveSpeedH = 5;
+
+    [Header("Grapple中の垂直方向の加速速度")]
     [SerializeField] float _swingMoveSpeedV = 7;
-    [SerializeField] float _swinwgSpeedLimit = 15;
 
     [Header("グラップによる引き寄せをやめる距離")]
     [SerializeField] private float _stopPullPos = 1;
@@ -18,32 +19,31 @@ public class PlayerGrapple : MonoBehaviour
     [Header("ダンパ-の強さ")]
     [SerializeField] private float _damperPower = 7;
 
-    [Header("ダンパ-の強さ")]
+    [Header("プレイヤーの重さ")]
     [SerializeField] private float _massScale = 4.5f;
-
-
-    SpringJoint _joint;
-    Rigidbody _rb;
 
     [SerializeField] PlayerController _playerController;
     [SerializeField] PlayerInput _playerInput;
+
+    private SpringJoint _joint;
+    private Rigidbody _rb;
 
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
     }
 
-
-
     /// <summary>スウィング中の動き</summary>
     public void GrappleMove()
     {
+        //jointがついている時のみ
         if (_joint != null)
         {
-            Vector3 dir = Vector3.forward * _playerInput.VerticalInput + Vector3.right * _playerInput.HorizontalInput;
-            Vector3 swingPoint = _playerController.PlayerSwingAndGrappleSetting.PredictionHit.point;
 
-            dir = Camera.main.transform.TransformDirection(dir);    // メインカメラを基準に入力方向のベクトルを変換する
+            // メインカメラを基準に入力方向のベクトルを変換する
+            Vector3 dir = Vector3.forward * _playerInput.VerticalInput + Vector3.right * _playerInput.HorizontalInput;
+
+            dir = Camera.main.transform.TransformDirection(dir);
             dir.y = 0;
 
             if (dir == Vector3.zero)
@@ -56,7 +56,7 @@ public class PlayerGrapple : MonoBehaviour
                 _rb.AddForce(dir * _swingMoveSpeedH);
             }
 
-
+            Vector3 swingPoint = _playerController.PlayerSwingAndGrappleSetting.PredictionHit.point;
             float distanceFromPoint = Vector3.Distance(transform.position, swingPoint);
 
             if (distanceFromPoint > _stopPullPos)
