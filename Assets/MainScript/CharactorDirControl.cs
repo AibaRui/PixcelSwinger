@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// キャラの向きをプレイヤーに向ける
+/// </summary>
 public class CharactorDirControl : MonoBehaviour
 {
     private GameObject _player;

@@ -178,6 +178,7 @@ public class GameSetting : MonoBehaviour
         }
         else
         {
+            _isChangeSetting = false;
             _settingPanel.SetActive(false);
         }
     }

@@ -50,7 +50,7 @@ public class PlayerStateOpenInventory : PlayerStateBase
 
             if (_stateMachine.PlayerController.GameSetting.IsChangeSetting || _stateMachine.PlayerController.AudioSetting.IsChange)
             {
-
+                Debug.Log("-------ïœçXÇ†ÇË");
             }
             else
             {

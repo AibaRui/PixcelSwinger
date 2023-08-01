@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>プレイヤーのスウィングの動きの実装</summary>
 public class PlayerSwing : MonoBehaviour
 {
     [Header("Swing中の移動の速さ")]
@@ -19,23 +20,17 @@ public class PlayerSwing : MonoBehaviour
     [Header("ダンパ-の強さ")]
     [SerializeField] private float _massScale = 4.5f;
 
-
     [SerializeField] PlayerController _playerController;
+
     [SerializeField] PlayerInput _playerInput;
 
-    // [SerializeField] Animator _legAnim;
-
+    /// <summary>プレイヤーのSpringJoint</summary>
     private SpringJoint _joint;
+
+    /// <summary>プレイヤーのRigidBody</summary>
     private Rigidbody _rb;
 
 
-
-
-    //  Vector3 currentGrapplePosition;
-    private void Awake()
-    {
-
-    }
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -46,57 +41,51 @@ public class PlayerSwing : MonoBehaviour
     {
         if (_joint != null)
         {
+            //移動方向を決める
             Vector3 dir = Vector3.forward * _playerInput.VerticalInput + Vector3.right * _playerInput.HorizontalInput;
+
+            //Swingのアンカーの着地点
             Vector3 swingPoint = _playerController.PlayerSwingAndGrappleSetting.PredictionHit.point;
 
-            dir = Camera.main.transform.TransformDirection(dir);    // メインカメラを基準に入力方向のベクトルを変換する
+            // メインカメラを基準に入力方向のベクトルを変換する
+            dir = Camera.main.transform.TransformDirection(dir);
             dir.y = 0;
 
             if (dir == Vector3.zero)
             {
-                // 方向の入力がニュートラルの時は、y 軸方向の速度を保持するだけ
                 _rb.velocity = new Vector3(_rb.velocity.x, _rb.velocity.y, _rb.velocity.z);
-                //_airVelo = Vector3.zero;
-                //_animKatana.SetBool("Move", false);
-            }
+            }   // 方向の入力がニュートラルの時は、y 軸方向の速度を保持するだけ
             else
             {
-
                 _rb.AddForce(dir * _swingMoveSpeedH);
-            }
+            }   //入力が合ったら速度を加える
 
-
+            //アンカー着地点の方向
             Vector3 directionToPoint = swingPoint - transform.position;
 
-
+            //アンカーとの距離
             float distanceFromPoint = Vector3.Distance(transform.position, swingPoint);
-
-
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                Vector3 dirs = Camera.main.transform.forward;
-                _rb.AddForce(dirs.normalized * 10);
-                Debug.Log("加速");
-            }
 
             if (Input.GetKey(KeyCode.Space))
             {
                 _joint.maxDistance = distanceFromPoint * 0.5f;
                 _joint.minDistance = distanceFromPoint * 0.1f;
                 _rb.AddForce(directionToPoint.normalized * _swingBurst * 2);
-            }
+            }   //Spaceキーを押している間は加速する
             else
             {
                 _joint.maxDistance = distanceFromPoint * 0.8f;
                 _joint.minDistance = distanceFromPoint * 0.25f;
                 _rb.AddForce(directionToPoint.normalized * _swingBurst);
-            }
+            }   //通常の速さで加速
 
         }
     }
 
+    /// <summary>スウィングを始めた時の処理</summary>
     public void StartSwing()
     {
+
         RaycastHit predictionHit = _playerController.PlayerSwingAndGrappleSetting.PredictionHit;
 
         //空ぶったら何もしない
@@ -107,6 +96,8 @@ public class PlayerSwing : MonoBehaviour
 
         //swing/grappleの設定クラスに自身のjointを渡す
         _joint = gameObject.AddComponent<SpringJoint>();
+
+        //jointの情報を渡す
         _playerController.PlayerSwingAndGrappleSetting.Joint = _joint;
 
         //アンカーの着地点。
@@ -137,10 +128,6 @@ public class PlayerSwing : MonoBehaviour
 
         //質量
         _joint.massScale = _massScale;
-
-        //_tipPos = _playerController.PlayerSwingAndGrappleSetting.PredictionHit.point;
-        //current(意味:現在)
-        //currentGrapplePosition = gunTip.position;
     }
 
 
@@ -148,28 +135,8 @@ public class PlayerSwing : MonoBehaviour
     public void StopSwing()
     {
         _playerController.PlayerSwingAndGrappleSetting.Joint = null;
-
-        //legAnim.SetBool("Swing", false);
+    
+        //Jointを消す
         Destroy(_joint);
     }
-
-    public void LegAnimation()
-    {
-        // _legAnim.SetFloat("Speed", _rb.velocity.y);
-        // _legAnim.SetBool("Swing", true);
-
-        //if (transform.position.x > _playerController.PlayerSwingAndGrappleSetting.PredictionHit.point.x)
-        //{
-        //    _legAnim.SetBool("IsLeft", true);
-        //    _legAnim.SetBool("IsRight", false);
-        //}
-        //else
-        //{
-        //    _legAnim.SetBool("IsRight", true);
-        //    _legAnim.SetBool("IsLeft", false);
-        //}
-
-    }
-
-
 }

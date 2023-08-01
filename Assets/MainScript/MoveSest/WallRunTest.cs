@@ -86,7 +86,9 @@ public class WallRunTest : MonoBehaviour
             //外積を使い、進行方向を取る
             _wallForward = Vector3.Cross(_housen, transform.up);
 
-           // Debug.Log("外積:" + _wallForward);
+            Debug.DrawRay(transform.position, _rightWall.normal * 40, Color.yellow);
+
+            // Debug.Log("外積:" + _wallForward);
 
             if (_isOnKakou)
             {
@@ -132,6 +134,7 @@ public class WallRunTest : MonoBehaviour
 
             }
 
+            Debug.DrawRay(transform.position, _leftWall.normal * 40, Color.yellow);
 
             _syoumenHikuGaiseki.text = (transform.forward - _wallForward).ToString();
             _syoumenHikuGaisekiLong.text = (transform.forward - _wallForward).magnitude.ToString();
